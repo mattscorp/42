@@ -6,7 +6,7 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 12:17:59 by ceaudouy          #+#    #+#             */
-/*   Updated: 2018/12/21 14:10:42 by mascorpi         ###   ########.fr       */
+/*   Updated: 2018/12/21 14:15:47 by mascorpi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ char			**ft_read(int fd, char **tab)
 				i++;
 			}
 			free(tab);
-			free(buf);
 			return (NULL);
 		}
 		i++;
