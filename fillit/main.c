@@ -6,7 +6,7 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 12:17:59 by ceaudouy          #+#    #+#             */
-/*   Updated: 2018/12/20 11:30:36 by mascorpi         ###   ########.fr       */
+/*   Updated: 2018/12/21 12:42:37 by mascorpi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,13 @@ char			**ft_read(int fd, char **tab)
 		ft_bzero(buf, 21);
 		if (ft_checkerror(tab[i]) == 1 || ft_check_tetri(tab[i]) == 1 || 
 				i == 27)
+		{
+			ft_strdel(&buf);
 			return (NULL);
+		}
 		i++;
 	}
-	ft_strdel(&buf);
+	free(buf);
 	if (ret < 0 || (ret == 0 && !tab[0]))
 		return (NULL);
 	if (ft_check_end(tab[i - 1]) == 1)
@@ -44,13 +47,13 @@ char			**ft_read(int fd, char **tab)
 static void		ft_exec(char **tab)
 {
 	int		g;
-	char	*grid;
+	char	*fgrid;
 
 	g = ft_grid(tab);
 	ft_letter(tab);
-	grid = ft_solve(tab, g);
-	ft_putstr(grid);
-	//ft_strdel(&grid); free qlqchose non aloue d apres fsanitize
+	fgrid = ft_solve(tab, g);
+	ft_putstr(fgrid);
+	free(fgrid);
 }
 
 int				main(int ac, char **av)
@@ -68,25 +71,30 @@ int				main(int ac, char **av)
 	if (!(tab = (char**)malloc(sizeof(*tab) * 27)))
 		return (0);
 	fd = open(av[1], O_RDONLY);
-	if (!(tab = ft_read(fd, tab)))
+	if (fd)
 	{
-		ft_putstr("error\n");
+		if (!(tab = ft_read(fd, tab)))
+		{
+			ft_putstr("error\n");
+			while (tab[i])
+			{
+				free(tab[i]);
+				i++;
+			}
+			free(tab);
+			close(fd);
+			return (0);
+		}
+		ft_exec(tab);
 		while (tab[i])
 		{
-			ft_strdel(&tab[i]);
+			free(tab[i]);
 			i++;
 		}
-		ft_strdel(tab);
+		free(tab);
 		close(fd);
-		return (0);
 	}
-	ft_exec(tab);
-	while (tab[i])
-	{
-		ft_strdel(&tab[i]);
-		i++;
-	}
-	ft_strdel(tab);
-	close(fd);
+	else
+		ft_putstr("error\n");
 	return (0);
 }
