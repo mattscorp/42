@@ -6,7 +6,7 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 12:17:59 by ceaudouy          #+#    #+#             */
-/*   Updated: 2018/12/21 12:42:37 by mascorpi         ###   ########.fr       */
+/*   Updated: 2018/12/21 14:10:42 by mascorpi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,28 +19,88 @@ char			**ft_read(int fd, char **tab)
 	int		ret;
 
 	i = 0;
-	buf = ft_strnew(21); 
+	if (!(buf = ft_strnew(21)))
+		{
+			i = 0;	
+			free(buf);
+			while (tab[i])
+			{
+				free(tab[i]);
+				tab[i] = NULL;
+				i++;
+			}
+			free(tab);
+			tab = NULL;
+		return (NULL);
+		}
 	while (i < 26)
 		tab[i++] = NULL;
 	i = 0;
 	while ((ret = read(fd, buf, 21) > 0))
 	{
-		tab[i] = ft_strdup(buf);
+		if (!(tab[i] = ft_strdup(buf)))
+		{
+			i = 0;	
+			free(buf);
+			while (tab[i])
+			{
+				free(tab[i]);
+				tab[i] = NULL;
+				i++;
+			}
+			free(tab);
+			tab = NULL;
+			return (NULL);
+		}
 		ft_bzero(buf, 21);
 		if (ft_checkerror(tab[i]) == 1 || ft_check_tetri(tab[i]) == 1 || 
 				i == 27)
 		{
-			ft_strdel(&buf);
+
+			i = 0;	
+			free(buf);
+			while (tab[i])
+			{
+				free(tab[i]);
+				tab[i] = NULL;
+				i++;
+			}
+			free(tab);
+			free(buf);
 			return (NULL);
 		}
 		i++;
 	}
+	tab[i] = 0;
 	free(buf);
 	if (ret < 0 || (ret == 0 && !tab[0]))
+
+	{	
+		i = 0;	
+		free(buf);
+		while (tab[i])
+		{
+			free(tab[i]);
+			tab[i] = NULL;
+			i++;
+		}
+		free(tab);
+
 		return (NULL);
+	}
 	if (ft_check_end(tab[i - 1]) == 1)
+	{	
+		i = 0;	
+		free(buf);
+		while (tab[i])
+		{
+			free(tab[i]);
+			tab[i] = NULL;
+			i++;
+		}
+		free(tab);
 		return (NULL);
-	tab[i] = 0;
+	}
 	return (tab);
 }
 
@@ -62,26 +122,21 @@ int				main(int ac, char **av)
 	char	**tab;
 	int		i;
 
+
 	i = 0;
 	if (ac != 2)
 	{
 		ft_putstr("usage: ./fillit sample.fillit\n");
 		return (0);
 	}
-	if (!(tab = (char**)malloc(sizeof(*tab) * 27)))
-		return (0);
 	fd = open(av[1], O_RDONLY);
-	if (fd)
+	if (fd > 0)
 	{
+		if (!(tab = (char**)malloc(sizeof(*tab) * 27)))
+			return (0);
 		if (!(tab = ft_read(fd, tab)))
 		{
 			ft_putstr("error\n");
-			while (tab[i])
-			{
-				free(tab[i]);
-				i++;
-			}
-			free(tab);
 			close(fd);
 			return (0);
 		}
@@ -89,12 +144,14 @@ int				main(int ac, char **av)
 		while (tab[i])
 		{
 			free(tab[i]);
+			tab[i] = NULL;
 			i++;
 		}
 		free(tab);
-		close(fd);
+		tab = NULL;
 	}
 	else
 		ft_putstr("error\n");
+	close(fd);
 	return (0);
 }
