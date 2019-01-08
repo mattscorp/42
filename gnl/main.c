@@ -6,7 +6,7 @@
 /*   By: mascorpi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 11:34:24 by mascorpi          #+#    #+#             */
-/*   Updated: 2018/12/10 10:54:42 by mascorpi         ###   ########.fr       */
+/*   Updated: 2019/01/08 11:51:10 by mascorpi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	main()
 /*	if (ac != 2)
 		return(0);
 */	fd = open(av[1], O_RDONLY);
-	while ((ret = get_next_line(0, test)) > 0)
+	while ((ret = get_next_line(fd, test)) > 0)
 	{
 		ft_putstr(*test);
 		free(*test);
