@@ -6,117 +6,140 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/14 15:31:18 by ceaudouy          #+#    #+#             */
-/*   Updated: 2018/12/21 11:12:26 by mascorpi         ###   ########.fr       */
+/*   Updated: 2019/01/09 17:08:01 by ceaudouy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
-#include <stdio.h>
-int		ft_checkpos(char *fgrid, char *tab, int f, int g)
-{
-	int		j;
-	int		cnt;
 
-	j = 0;
-	cnt = 0;
-	while (tab[j] && fgrid[f + 1])
+static int	ft_check_piece(char *fgrid, char *piece, size_t size, size_t idx)
+{
+	size_t	x;
+	size_t	y;
+	size_t	i;
+
+	i = 0;
+	x = 0;
+	y = 0;
+	while (piece[i])
 	{
-		if (fgrid[f] == '.' && (tab[j] >= 65 && tab[j] <= 90))
-			cnt++;
-		if (tab[j] == '\n')
-			f = (f + g - 4);
-		j++;
-		f++;
+		if (piece[i] == '.')
+			x++;
+		if (piece[i] == '\n')
+		{
+			y++;
+			x = 0;
+		}
+		if (piece[i] == '#')
+		{
+			if (fgrid[(x + (size + 1) * y) + idx] != '.')
+				return (0);
+			x++;
+		}
+		i++;
 	}
-	if (cnt == 4)
-		return (0);
 	return (1);
 }
 
-char	*ft_backtrack(char *fgrid, char **tab, int g, int i, int start)
+static void	ft_place_piece(char **tab, size_t i, size_t size, size_t idx)
 {
-	int			j;
-	size_t		f;
+	size_t	x;
+	size_t	y;
+	size_t	j;
+	int		let;
 
-//	printf("start = %d\n", start);
-//	printf("i = %d\n", i);
-	f = start;
-//	printf("f = start avant while= %zu\n", f);
-	while (tab[i])
+	x = 0;
+	y = 0;
+	j = 0;
+	let = 'A' + i - 1;
+	while (tab[i][j])
 	{
-		if (f >= ft_strlen(fgrid))
+		if (tab[i][j] == '.')
+			x++;
+		if (tab[i][j] == '\n')
 		{
-//			puts("FINAL EXIT");
-	//		printf("%s\n", fgrid);
-			return (fgrid);
+			y++;
+			x = 0;
 		}
-	//	printf("fgrid = \n%s\n", fgrid);
-
-	//	printf("f  dans while= %zu\n", f);
-	//	printf("tab[i] = \n%s\n", tab[i]);
-		j = 0;
-		while (tab[i][j] == '.' || tab[i][j] == '\n')
-			j++;
-		while (fgrid[f] != '.' && f < ft_strlen(fgrid))
-			f++;
-	//	printf("f = %zu\n", f);
-		if ((ft_checkpos(fgrid, &tab[i][j], f, g) == 0))
+		if (tab[i][j] == '#')
 		{
-			while (tab[i][j])
-			{
-				if (fgrid[f] == '.' && (tab[i][j] >= 65 && tab[i][j] <= 90))
-					fgrid[f] = tab[i][j];
-				if (tab[i][j] == '\n')
-					f = (f + g - 4);
-				f++;
-				j++;
-			}
-//			puts("EXIT");
-	//		printf("j = %d\n", j);
-			i++;
-			f = 0;
+			tab[0][(x + (size + 1) * y) + idx] = let;
+			x++;
 		}
-		else
-			f++;
-		if (f >= ft_strlen(fgrid) - 1)
-		{
-//			puts("lalalal");
-			i--;
-			j = 0;
-			f = 0;
-			start = 0;
-			if ( i == -1)
-			{
-				return (ft_solve(tab, g + 1));
-			}
-			while (tab[i][j] == '.' || tab[i][j] == '\n') // caractere recheche
-				j++;
-			while (fgrid[start] != tab[i][j]) // derniere position commence
-				start++; 
-			start++; // pos + 1
-			while (fgrid[f]) //dell caractere voulu
-			{
-				if (fgrid[f] == tab[i][j])
-					fgrid[f] = '.';
-				f++;
-			}
-//			puts("backtak");
-			return (ft_backtrack(fgrid, tab, g, i, start));//start);
-		}
+		j++;
 	}
-	return (fgrid);
 }
 
-char	*ft_solve(char **tab, int g)
+int			ft_backtrack(char **tab, size_t g, size_t i, size_t start)
 {
-	int		tot;
-	char	*fgrid;
-	
-	tot = ((g + 1) * g);
-	if (!(fgrid = (char *)malloc(sizeof(*fgrid) *(tot + 1))))
+	int		let;
+
+	let = 'A' + i - 1;
+	while (start < ft_strlen(tab[0]))
+	{
+		if (ft_check_piece(tab[0], tab[i], g, start) == 1)
+		{
+			ft_place_piece(tab, i, g, start);
+			return (0);
+		}
+		else
+			start++;
+	}
+	return (1);
+}
+
+int			*ft_parsing(char *tab, size_t i, size_t j, size_t x)
+{
+	size_t	y;
+	int		*info;
+
+	y = 0;
+	if (!(info = (int *)malloc(sizeof(int) * 8)))
 		return (NULL);
-	ft_clear(fgrid, g);
-	fgrid = ft_backtrack(fgrid, tab, g, 0, 0);
-//	printf("solve fgrid \n%s\n", fgrid);
-	return (fgrid);
+	while (tab[j])
+	{
+		if (tab[j] == '.')
+			x++;
+		else if (tab[j] == '\n')
+		{
+			y++;
+			x = 0;
+		}
+		else if (tab[j] == '#')
+		{
+			info[i++] = x;
+			info[i++] = y;
+			x++;
+		}
+		j++;
+	}
+	return (info);
+}
+
+char		*ft_solve(char **tab, size_t g)
+{
+	size_t	i;
+	size_t	start;
+
+	i = 1;
+	start = 0;
+	if (!(tab[0] = (char *)malloc(sizeof(*tab) * (((g + 1) * g) + 1))))
+		return (NULL);
+	tab = ft_clear(tab, g);
+	while (tab[i])
+	{
+		if (ft_backtrack(tab, g, i, start) == 0)
+		{
+			i++;
+			start = 0;
+		}
+		else
+		{
+			i--;
+			start = ft_fail(tab, i, g, 'A' + i - 1);
+		}
+		if (i == 0)
+			break ;
+	}
+	return (tab[0]);
 }
