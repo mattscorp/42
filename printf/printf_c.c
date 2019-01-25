@@ -6,13 +6,13 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/14 12:16:50 by ceaudouy          #+#    #+#             */
-/*   Updated: 2019/01/25 14:27:27 by mascorpi         ###   ########.fr       */
+/*   Updated: 2019/01/24 11:11:31 by ceaudouy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int		ft_l(const char *c)
+static int	ft_l(const char *c)
 {
 	if (*c == 'o')
 		return (11);
@@ -41,7 +41,7 @@ int		ft_l(const char *c)
 	return (-1);
 }
 
-int		ft_h(const char *c)
+static int	ft_h(const char *c)
 {
 	if (*c == 'd' || *c == 'i')
 		return (6);
@@ -70,7 +70,7 @@ int		ft_h(const char *c)
 	return (-1);
 }
 
-int		ft_checkflag(const char *c, int i)
+static int	ft_checkflag(const char *c, int i)
 {
 	while (c[i])
 	{
@@ -107,9 +107,9 @@ int			ft_par(const char *restrict format, va_list ap)
 	char	*str;
 
 	i = 0;
-	if (!(option = (int*)malloc(sizeof(int) * 666666)))
+	if (!(option = (int*)malloc(sizeof(int) * 5)))
 		return (0);
-	while (i < 6)
+	while (i < 5)
 		option[i++] = 0;
 	i = 0;
 	while (format[i])
@@ -119,20 +119,18 @@ int			ft_par(const char *restrict format, va_list ap)
 			if (format[i + 1] == '%')
 				i++;
 			option = ft_flags(&format[i + 1], option);
-			printf("option[0] = %d\n", option[0]);
-			printf("option[1] = %d\n", option[1]);
-			printf("option[2] = %d\n", option[2]);
-			printf("option[3] = %d\n", option[3]);
-			printf("option[4] = %d\n", option[4]);
-			printf("option[5] = %d\n", option[5]);
 			flag = ft_checkflag(&format[i + 1], 0);
 			str = func[flag](ap);
-			if (option[0] == 1 || option[1] == 1)
-				i = ft_sign(&format[i + 1], option, i, str);
+//			if (option[0] == 1 || option[1] == 1)
+//				i += ft_sign(&format[i + 1], ap, option);
 			if (option[4] == 1 || option[2] == 1 || option[3] == 1 || option[5] == 1)
 				i = ft_hashtag(format, option, i, str);
 			if (flag != 1)
 			free(str);
+/*			if (flag == 3 || flag == 6 || flag == 10 || flag == 11)
+				i++;
+			if (flag == 4 || flag == 7 || flag == 9 || flag == 12)
+				i += 2;*/
 		}
 		if (format[i] && ft_strlen(format) > i)
 			ft_putchar(format[i]);

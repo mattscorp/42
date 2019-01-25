@@ -6,44 +6,49 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/15 11:20:17 by ceaudouy          #+#    #+#             */
-/*   Updated: 2019/01/17 18:14:45 by mascorpi         ###   ########.fr       */
+/*   Updated: 2019/01/24 10:56:25 by ceaudouy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf.h"
+#include "ft_printf.h"
 
-int		ft_decimal(va_list ap)
+char		*ft_decimal(va_list ap)
 {
-	ft_putnbr(va_arg(ap, int));
-	return (0);
+	int	i;
+
+	i = va_arg(ap, int);
+	return (ft_itoa(i));
 }
 
-int		ft_string(va_list ap)
-{
-	ft_putstr(va_arg(ap, char*));
-	return (0);
-}
-
-int		ft_longlong(va_list ap)
+char		*ft_longlong_d(va_list ap)
 {
 	long long nb;
 
-	nb = va_arg(ap, long long int);
-	ft_putlonglong(nb);
-	return (0);
+	nb = va_arg(ap, long long);
+	return (ft_itoalonglong(nb));
 }
 
-int		ft_long(va_list ap)
+char		*ft_long_d(va_list ap)
 {
-	long int	nb;
+	long	nb;
+	char	*str;
 
-	nb = va_arg(ap, long int);
-	ft_putlong(nb);
-	return (0);
+	nb = va_arg(ap, long);
+	return (ft_itoalong(nb));
 }
 
-int		ft_char(va_list ap)
+char	*ft_short_d(va_list ap)
 {
-	ft_putchar(va_arg(ap, int));
-	return (0);
+	short		i;
+
+	i = va_arg(ap, int);
+	return (ft_itoa(i));
+}
+
+char	*ft_char_d(va_list ap)
+{
+	char		i;
+
+	i = (char)va_arg(ap, int);
+	return (ft_itoa(i));
 }

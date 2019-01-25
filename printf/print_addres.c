@@ -1,43 +1,38 @@
-#include <stdio.h>
-#include "libft/libft.h"
-#include "printf.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_addres.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mascorpi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/21 11:32:39 by mascorpi          #+#    #+#             */
+/*   Updated: 2019/01/24 10:49:30 by ceaudouy         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// void ft_pointer(const void *p)
- int ft_pointer(va_list ap)
+#include "ft_printf.h"
+
+char		*ft_pointer(va_list ap)
 {
 	unsigned long	adr;
 	char const		*base;
-	char			res[9];
-	int 			i;
-	
-//	adr = (unsigned long) p;
-	adr = (unsigned long) va_arg(ap, void*);
+	char			*res;
+	int				i;
+
+	adr = (unsigned long)va_arg(ap, void*);
 	base = "0123456789abcdef";
-	i = 8;
-	while ((adr / 16) > 0 || i >= 8)
+	i = 10;
+	if (!(res = (char*)malloc(sizeof(*res) * 12)))
+		return (NULL);
+	while ((adr / 16) > 0 || i >= 10)
 	{
 		res[i] = base[(adr % 16)];
 		adr /= 16;
 		i--;
 	}
 	res[i] = base[(adr % 16)];
-	ft_putchar('0');
-	ft_putchar('x');
-	while (i < 9)
-	{
-		ft_putchar(res[i]);
-		i++;
-	}
-	return (0);
+	res[0] = '0';
+	res[1] = 'x';
+	res[11] = '\0';
+	return (res);
 }
-/*
-int	main()
-{
-	char	*str;
-	unsigned int yo;
-
-	str = "bonjour";
-	ft_pointer ((const void*)str);
-	ft_printf(" %p\n", str);
-	return (0);
-}*/
