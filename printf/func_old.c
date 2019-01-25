@@ -6,7 +6,7 @@
 /*   By: mascorpi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 16:06:15 by mascorpi          #+#    #+#             */
-/*   Updated: 2019/01/24 16:12:05 by mascorpi         ###   ########.fr       */
+/*   Updated: 2019/01/25 15:04:24 by mascorpi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ static void ft_func2(void)
 	func[25] = &ft_hex_x_short;
 	func[26] = &ft_hex_x_long;
 	func[27] = &ft_hex_x_longlong;
-	func[28] = &ft_float;
 }
 
 void        ft_func(void)
@@ -58,8 +57,10 @@ int		ft_checkflag_end(const char *c, int i)
 			return (1);
 		if (c[i] == 'c')
 			return (2);
-		if (c[i] == 'h' || c[i] == 'l' || c[i] == '+' || c[i] == '-')
-			return (-1);
+		if (c[i] == 'l')
+			return (ft_l(&c[i + 1]));
+		if (c[i] == 'h')
+			return (ft_h(&c[i + 1]));
 		if (c[i] == 'o')
 			return (8);
 		if (c[i] == 'p')

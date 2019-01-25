@@ -6,7 +6,7 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/14 12:23:46 by ceaudouy          #+#    #+#             */
-/*   Updated: 2019/01/24 16:12:02 by mascorpi         ###   ########.fr       */
+/*   Updated: 2019/01/24 17:21:48 by mascorpi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "libft/libft.h"
 # include <stdio.h>
 
-char	*(*func[29])(va_list);
+char	*(*func[28])(va_list);
 void    ft_func(void);
 int		ft_printf(const char *restrict format, ...);
 char	*ft_decimal(va_list ap);
@@ -63,5 +63,5 @@ int     ft_checkflag(const char *c, int i);
 int     ft_checkflag_end(const char *c, int i);
 int		ft_l(const char *c);
 int		ft_h(const char *c);
-char    *ft_float(va_list);
+
 #endif

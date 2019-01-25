@@ -6,7 +6,7 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/14 12:16:50 by ceaudouy          #+#    #+#             */
-/*   Updated: 2019/01/25 14:27:27 by mascorpi         ###   ########.fr       */
+/*   Updated: 2019/01/25 15:04:26 by mascorpi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ int		ft_checkflag(const char *c, int i)
 			return (18);
 		if (c[i] == 'X')
 			return (23);
+		if (c[i] == 'f')
+			return (28);
 		i++;
 	}
 	return (-1);
@@ -107,7 +109,7 @@ int			ft_par(const char *restrict format, va_list ap)
 	char	*str;
 
 	i = 0;
-	if (!(option = (int*)malloc(sizeof(int) * 666666)))
+	if (!(option = (int*)malloc(sizeof(int) * 6)))
 		return (0);
 	while (i < 6)
 		option[i++] = 0;
@@ -127,11 +129,11 @@ int			ft_par(const char *restrict format, va_list ap)
 			printf("option[5] = %d\n", option[5]);
 			flag = ft_checkflag(&format[i + 1], 0);
 			str = func[flag](ap);
-			if (option[0] == 1 || option[1] == 1)
-				i = ft_sign(&format[i + 1], option, i, str);
+			
 			if (option[4] == 1 || option[2] == 1 || option[3] == 1 || option[5] == 1)
 				i = ft_hashtag(format, option, i, str);
-			if (flag != 1)
+			else if ((option[0] == 1 || option[1] == 1) && option[3] != 1)
+				i = ft_sign(&format[i + 1], option, i, str);	if (flag != 1)
 			free(str);
 		}
 		if (format[i] && ft_strlen(format) > i)
