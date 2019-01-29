@@ -6,7 +6,7 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/14 12:16:50 by ceaudouy          #+#    #+#             */
-/*   Updated: 2019/01/25 15:04:26 by mascorpi         ###   ########.fr       */
+/*   Updated: 2019/01/29 17:46:16 by mascorpi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ int		ft_l(const char *c)
 		return (21);
 	if (*c == 'X')
 		return (26);
+	if (*c == 'f')
+		return (29);
 	if (*c == 'l')
 	{
 		c++;
@@ -72,7 +74,7 @@ int		ft_h(const char *c)
 
 int		ft_checkflag(const char *c, int i)
 {
-	while (c[i])
+	while (i < 5)
 	{
 		if (c[i] == 'd' || c[i] == 'i')
 			return (0);
@@ -80,6 +82,8 @@ int		ft_checkflag(const char *c, int i)
 			return (1);
 		if (c[i] == 'c')
 			return (2);
+		if (c[i] == 'L')
+			return (30);
 		if (c[i] == 'l')
 			return (ft_l(&c[i + 1]));
 		if (c[i] == 'h')
@@ -103,15 +107,17 @@ int		ft_checkflag(const char *c, int i)
 
 int			ft_par(const char *restrict format, va_list ap)
 {
-	int		i;
+	size_t	i;
 	int		*option;
 	int		flag;
 	char	*str;
+	int		cnt;
 
 	i = 0;
-	if (!(option = (int*)malloc(sizeof(int) * 6)))
+	cnt = 0;
+	if (!(option = (int*)malloc(sizeof(int) * 7)))
 		return (0);
-	while (i < 6)
+	while (i < 7)
 		option[i++] = 0;
 	i = 0;
 	while (format[i])
@@ -119,37 +125,43 @@ int			ft_par(const char *restrict format, va_list ap)
 		if (format[i] == '%')
 		{
 			if (format[i + 1] == '%')
-				i++;
-			option = ft_flags(&format[i + 1], option);
-			printf("option[0] = %d\n", option[0]);
-			printf("option[1] = %d\n", option[1]);
-			printf("option[2] = %d\n", option[2]);
-			printf("option[3] = %d\n", option[3]);
-			printf("option[4] = %d\n", option[4]);
-			printf("option[5] = %d\n", option[5]);
-			flag = ft_checkflag(&format[i + 1], 0);
-			str = func[flag](ap);
-			
-			if (option[4] == 1 || option[2] == 1 || option[3] == 1 || option[5] == 1)
-				i = ft_hashtag(format, option, i, str);
-			else if ((option[0] == 1 || option[1] == 1) && option[3] != 1)
-				i = ft_sign(&format[i + 1], option, i, str);	if (flag != 1)
-			free(str);
+					i++;
+			else
+			{
+				option = ft_flags(&format[i + 1], option);
+				flag = ft_checkflag(&format[i + 1], 0);
+				if (flag == -1 && format[i + 1] == '\0')
+					return (0);
+				str = func[flag](ap);
+				if (option[4] == 1 || option[2] == 1 || option[3] == 1 || option[5] == 1)
+					cnt += ft_hashtag(format, option, i, str);
+				else if ((option[0] == 1 || option[1] == 1) && option[3] != 1)
+					cnt += ft_sign(&format[i + 1], option, i, str);
+				if (flag != 1)
+					free(str);
+				 while (format[i] && ft_checkflag_end(&format[i], 0) == -1)
+					i++;
+					i++;
+			}
 		}
 		if (format[i] && ft_strlen(format) > i)
+		{
+			cnt++;
 			ft_putchar(format[i]);
+		}
 		i++;
 	}
-	return (0);
+	return (cnt);
 }
 
 int			ft_printf(const char *restrict format, ...)
 {
 	va_list ap;
+	int		cnt;
 
 	ft_func();
 	va_start(ap, format);
-	ft_par(format, ap);
+	cnt = ft_par(format, ap);
 	va_end(ap);
-	return (0);
+	return (cnt);
 }

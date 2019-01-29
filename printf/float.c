@@ -6,7 +6,7 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 16:32:45 by ceaudouy          #+#    #+#             */
-/*   Updated: 2019/01/25 18:30:59 by mascorpi         ###   ########.fr       */
+/*   Updated: 2019/01/29 18:08:45 by mascorpi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,83 +14,113 @@
 
 static char	*ft_approx(char *deci)
 {
-	int	i;
+	int		i;
 
 	i = ft_strlen(deci);
 	i--;
-	printf("i = %d\n", i);
-	 while(deci[i] == '9' )
+	if (deci[i] >= '5')
 	{
-		deci[i] = '0';
-		i--;
-	
-		if (deci[i] != '9')
+		while (deci[i - 1] == '9')
 		{
-			deci[i] = deci[i] + 1;
-			break;
+			deci[i - 1] = '0';
+			i--;
 		}
+		deci[i - 1] = deci[i - 1] + 1;
 	}
-/*	i = ft_strlen(deci);
+	i = ft_strlen(deci);
 	i--;
-	printf("iii = %d\n", i);
-	printf("idecii = %c\n", deci[i]);
-		if (deci[i] < '5')
-		{
-			deci[i] = deci[i] + 1;
-		}	
-//	}
-//	while (deci[i])
-//	{
-//		if (!(deci[i] >= '0' && deci [i] <= '9'))
-//			deci[i] = '0';
-//		i++;
-//	}
-*/	return (deci);
+	deci[i] = '\0';
+	return (deci);
 }
 
-char    *ft_float(va_list ap)
+static char	*ft_fill_zero(long tmp, char *deci, long double f)
 {
-	float   f;
+	if (f == 0)
+		deci = "000000\0";
+	else
+	{
+		f = f * 10000000;
+		tmp = f;
+		deci = ft_itoalong(tmp);
+		deci = ft_approx(deci);
+	}
+	return (deci);
+}
+
+char		*ft_float(va_list ap)
+{
+	float	f;
 	long	tmp;
 	char	*rtn;
 	char	*deci;
-	int	len;
+	int		len;
 
 	f = va_arg(ap, double);
 	tmp = f;
 	len = ft_strlen(ft_itoalong(tmp));
 	if (!(rtn = (char*)malloc(sizeof(char) * (len + 7))))
 		return (NULL);
-	rtn = ft_itoalong(tmp);
-	rtn[len] = '.';
-	printf("f avant =%f\n", f);
-	f = f - tmp;
-	printf("f - tmp =%f\n", f);
-	f = f * 1000000;
-	printf("f * 1000000 =%f\n", f);
 	if (!(deci = (char*)malloc(sizeof(char) * 7)))
 		return (NULL);
-	deci[7] = '\0';
-	tmp = f;
-	printf("tmp =%ld\n", tmp);
-
-	deci = ft_itoalong(tmp);
-	printf("deci  =%s\n", deci);
-	deci = ft_approx(deci);
-	printf("deci approx =%s\n", deci);
-
+	rtn = ft_itoalong(tmp);
+	rtn[len] = '.';
+	f = f - tmp;
+	deci = ft_fill_zero(tmp, deci, f);
 	if (f < 0)
 		rtn = ft_strjoin(rtn, deci + 1);
-	else	
+	else
 		rtn = ft_strjoin(rtn, deci);
-/*	len = 0;
-	while(rtn[len])
-	{
-		if (!(rtn[len] >= '0' && rtn[len] <= '9') && !(rtn[len] == '.' ))
-			rtn[len] = '0';
-		len++;
-		printf("len = %d\n", len);
-	}
-*/	printf("rtn FINAL = %s\n", rtn);
+	return (rtn);
+}
+
+char		*ft_float_l(va_list ap)
+{
+	double	f;
+	long	tmp;
+	char	*rtn;
+	char	*deci;
+	int		len;
+
+	f = va_arg(ap, double);
+	tmp = f;
+	len = ft_strlen(ft_itoalong(tmp));
+	if (!(rtn = (char*)malloc(sizeof(char) * (len + 7))))
+		return (NULL);
+	if (!(deci = (char*)malloc(sizeof(char) * 7)))
+		return (NULL);
+	rtn = ft_itoalong(tmp);
+	rtn[len] = '.';
+	f = f - tmp;
+	deci = ft_fill_zero(tmp, deci, f);
+	if (f < 0)
+		rtn = ft_strjoin(rtn, deci + 1);
+	else
+		rtn = ft_strjoin(rtn, deci);
+	return (rtn);
+}
+
+char		*ft_float_long_d(va_list ap)
+{
+	long double	f;
+	long		tmp;
+	char		*rtn;
+	char		*deci;
+	int			len;
+
+	f = va_arg(ap, long double);
+	tmp = f;
+	len = ft_strlen(ft_itoalong(tmp));
+	if (!(rtn = (char*)malloc(sizeof(char) * (len + 7))))
+		return (NULL);
+	if (!(deci = (char*)malloc(sizeof(char) * 7)))
+		return (NULL);
+	rtn = ft_itoalong(tmp);
+	rtn[len] = '.';
+	f = f - tmp;
+	deci = ft_fill_zero(tmp, deci, f);
+	if (f < 0)
+		rtn = ft_strjoin(rtn, deci + 1);
+	else
+		rtn = ft_strjoin(rtn, deci);
 	return (rtn);
 }

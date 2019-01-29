@@ -6,7 +6,7 @@
 /*   By: ceaudouy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 10:48:18 by ceaudouy          #+#    #+#             */
-/*   Updated: 2019/01/24 10:48:23 by ceaudouy         ###   ########.fr       */
+/*   Updated: 2019/01/28 11:49:08 by ceaudouy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int		ft_len(unsigned long long n)
 	return (len);
 }
 
-static void		ft_print(unsigned long long n, char *tab, int neg, int len)
+static void		ft_print(unsigned long long n, char *tab, int len)
 {
 	int		i;
 
@@ -36,20 +36,17 @@ static void		ft_print(unsigned long long n, char *tab, int neg, int len)
 		n = n / 10;
 		i--;
 	}
-	if (neg == 1)
-		tab[0] = '-';
 	tab[len + 1] = '\0';
 }
 
 char			*ft_itoa_ulong(unsigned long long n)
 {
-	int		neg;
 	int		len;
 	char	*tab;
 
-	len = ft_len(n) + neg;
+	len = ft_len(n);
 	if (!(tab = (char*)malloc(sizeof(*tab) * len + 2)))
 		return (0);
-	ft_print(n, tab, neg, len);
+	ft_print(n, tab, len);
 	return (tab);
 }
