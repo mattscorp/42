@@ -1,0 +1,3 @@
+cron
+
+ajouter dans la crontab se trouvant /etc/crontab l action a effectuer avec la recurence et l horraire d execution

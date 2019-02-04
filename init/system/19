@@ -1,0 +1,6 @@
+#ls /etc/init.d
+
+apache-htcacheclean  console-setup.sh  dbus        keyboard-setup.sh  networking  rsyslog  sudo
+apache2              cron              hwclock.sh  kmod               procps      ssh      udev
+
+script d'initialisation

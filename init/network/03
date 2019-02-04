@@ -1,1 +1,1 @@
-networksetup -listallhardwareports
+ifconfig en1 | grep ether | cut -c8- | rev | cut -c2- | rev

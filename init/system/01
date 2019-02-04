@@ -1,0 +1,4 @@
+/etc/debian_version
+
+
+lsb_release -d

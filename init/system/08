@@ -1,0 +1,6 @@
+il faut creer un fichier authorized_keys
+
+/root/.ssh/authorized_keys
+
+
+pour donner acces via cle RSA il faut ensuite placer l id_rsa.pub dans ce fichier
