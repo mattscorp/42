@@ -1,0 +1,295 @@
+ip de la machine Malicieuse : 10.12.1.136
+
+Creation de la debian
+	Nom : debian_RS
+	Type : debian 64 bits
+	Base Memory : 2048 MB
+	Stockage : Goinfre
+puis Create.
+
+Settings
+	Storage -> Empty -> choix du disque
+	Storage -> Live CD/DVD ? non
+	Network -> Attached to -> de "NAT" a "Bridged Adapter"
+	Network -> Advanced -> Promiscuous Mode -> de "Deny" a "Allow All"
+
+Init de la VM
+	Language = eng
+	Pays = US
+	Clavier = etats-unis
+	System name =
+	Domain = 
+	Root mdp = etlagors
+	New user = etlagors
+	Name new user = etlagors
+	Mdp = etlagors
+	
+Partition
+	Manuel
+	Choisir SCSI 1
+	CF photo
+
+Suite
+	Pas de nouvelles analyses d'image CD
+	Pays du miroir = France
+	Miroir de l'archive debian = ftp.fr.debian.org
+	Mandataire http (option) = laisser vide
+	Participation aux stats = non
+	Logiciel a installer
+		serveur ssh
+		util. usuels du sys
+	Install GRUB ? oui Dans le disq. de la VM
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+1) Utilisez sudo pour pouvoir, depuis cet utilisateur, effectuer les operations deman- dant des droits speciaux.
+en root:
+	# apt install sudo
+	ajout de l'utilisateur non root au sudoers:
+	# sudo adduser etlagors sudo
+
+Connexion en tant que etlagors:
+	su etlagors && mot de passe
+	pkg ifconfig = apt install net-tools
+	pkg fail2ban (DDOS) = apt install fail2ban
+	pkg vim = apt install vim
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+2) Nous ne voulons pas que vous utilisiez le service DHCP de votre machine. A vous donc de la configurer afin qu’elle ait une IP fixe et un Netmask en /30.
+Trouver l'IP du DHCP:
+	ip route et ip a afin de trouver l'adresse ip et l'adresse de broadcast
+Modifier DHCP:
+sudo nano /etc/network/interfaces
+	Assigner une adresse IP statique pour ce serveur DHCP avec enp0s3 :
+		auto enp0s3
+		iface enp0s3 inet static
+			address 10.0.2.1
+			netmask 255.255.255.252
+			gateway 10.12.254.254
+Relancer la VM
+	ip route && ip a
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+3) Vous devez changer le port par defaut du service SSH par celui de votre choix. L’accès SSH DOIT se faire avec des publickeys. L’utilisateur root ne doit pas pouvoir se connecter en SSH.
+Generer une clefs
+	Dans le Terminal de l'ordinateur :
+		cd ~/.ssh
+		ssh-keygen -t rsa (enter x 3)
+	Dans la VM
+		Verifier que ~/.ssh/authorized_keys existe, sinon le creer
+	Dans le terminal de l'ordinateur
+		scp ~/.ssh/id_rsa.pub etlagors@10.12.1.108:/home/etlagors/.ssh/authorized_keys
+	Relancer la VM
+Modification du Port
+	sudo nano /etc/ssh/sshd_config
+	passer "#Port 22" en "Port 4351"
+Modification des modalites d'acces de SSH
+	Remplacer :	"#PubkeyAuthentication yes" par "PubkeyAuthentication yes"
+ 	Remplacer : "#PermitRootLogin prohibit-password" par "PermitRootLogin no"
+	Remplacer : "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2" par "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2"
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+4) Vous devez mettre en place des règles de pare-feu (firewall) sur le serveur avec uniquement les services utilisés accessible en dehors de la VM.
+en root :
+	Creer mkdir ~/Scripts/
+	Puis firewall.sh
+	sudo vim /root/Scripts/firewall.sh
+	Dans firewall.sh puis commenter ce les regles que l'on ne veux pas, ne pas oublier de modifier le port par defaut (22) par celui que l'on a choisit precedement
+		#!/bin/sh
+		### Basiques ##
+		# On vide les règles déjà existantes
+		iptables -t filter -F
+		iptables -t filter -X
+		# On refuse toutes les connexions
+		iptables -t filter -P INPUT DROP
+		iptables -t filter -P FORWARD DROP
+		iptables -t filter -P OUTPUT DROP
+		# On autorise les connexions déjà établie
+		iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+		iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+		# On autorise le loop-back (localhost)
+		iptables -t filter -A INPUT -i lo -j ACCEPT
+		iptables -t filter -A OUTPUT -o lo -j ACCEPT
+		# On autorise le ping
+		iptables -t filter -A INPUT -p icmp -j ACCEPT
+		iptables -t filter -A OUTPUT -p icmp -j ACCEPT
+		# serveur DNS et Resolutions
+		iptables -t filter -A OUTPUT -p tcp --dport 53 -j ACCEPT
+		iptables -t filter -A OUTPUT -p udp --dport 53 -j ACCEPT
+		iptables -t filter -A INPUT -p tcp --dport 53 -j ACCEPT
+		iptables -t filter -A INPUT -p udp --dport 53 -j ACCEPT
+		# SSH (à adapter suivant votre cas)
+		iptables -t filter -A INPUT -p tcp --dport 22 -j ACCEPT
+		iptables -t filter -A OUTPUT -p tcp --dport 22 -j ACCEPT
+		# NTP (pour avoir un serveur à l'heure)
+		iptables -t filter -A OUTPUT -p udp --dport 123 -j ACCEPT
+		### HTTP/HTTPS ###
+		iptables -t filter -A INPUT -p tcp --dport 80 -j ACCEPT
+		iptables -t filter -A INPUT -p tcp --dport 443 -j ACCEPT
+		iptables -t filter -A INPUT -p tcp --dport 8443 -j ACCEPT
+		iptables -t filter -A OUTPUT -p tcp --dport 80 -j ACCEPT
+		iptables -t filter -A OUTPUT -p tcp --dport 443 -j ACCEPT
+		# Webmin 
+		iptables -t filter -A INPUT -p tcp --dport 10000 -j ACCEPT
+		iptables -t filter -A OUTPUT -p tcp --dport 10000 -j ACCEPT
+		### FTP / FTP-DATA ###
+		iptables -t filter -A INPUT -p tcp --dport 20 -j ACCEPT
+		iptables -t filter -A INPUT -p tcp --dport 21 -j ACCEPT
+		iptables -t filter -A OUTPUT -p tcp --dport 21 -j ACCEPT
+		iptables -t filter -A OUTPUT -p tcp --dport 20 -j ACCEPT
+Rendre le script executable
+	sudo chmod +x /root/Scripts/firewall.sh
+Puis l'executer
+	sudo /root/Scripts/firewall.sh
+On peut ensuite verifier que les regles ont bien ete rajoutees dans iptables
+	sudo iptables -L
+Afin de rendre les regles non-volatiles (donc les retrouves lorsque l'on reboot la VM)
+
+Creer dans /etc/ le fichier firewall.conf
+Puis lancer la commande suivante afin de placer les commandre dans le fichier nouvellement cree
+	sudo iptables-save > /etc/firewall.conf
+
+Puis dans /etc/network/if-up.d/ il faut creer le fichier iptables et lancer la commande
+	sudo vim /etc/network/if-up.d/iptables puis y mettre :
+		#!/bin/sh
+		iptables-restore < /etc/firewall.conf
+Enfin, le rendre executable
+	sudo chmod +x /etc/network/if-up.d/iptables
+source : https://blog.dinfadom.com/2016/03/21/charger-automatiquement-ses-regles-iptables-au-demarrage-debianubuntu-sans-iptables-persistent/
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+5) Vous devez mettre en place une protection contre les DOS (Denial Of Service Attack) sur les ports ouverts de votre VM.
+
+Lien source : https://blog.nicolargo.com/2012/02/proteger-son-serveur-en-utilisant-fail2ban.html
+Modification dans /etc/fail2ban/jail.local et non /etc/fail2ban/jail.conf
+Possibilites de verification 
+	sudo fail2ban-client status
+	iptables -L
+apt install nmap
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+6) Vous devez mettre en place une protection contre les scans sur les ports ouverts de votre VM.
+installation du service
+	apt-get install portsentry
+
+Rajout de notre adresse ip dans afin de nous permettre de scanner nos ports (exception) dans : /etc/portsentry/portsentry.ignore.static
+	10.12.1.108
+	10.12.7.7
+
+Puis restart avec le systeme avec la commande suivante :
+	sudo service portsentry restart (afin que .ignore.static remplit .ignore)
+
+Modification du fichier /etc/default/portsentry :
+	Remplacer
+	TCP_MODE="tcp"
+	UDP_MODE="udp"
+	Par
+	TCP_MODE="atcp"
+	UDP_MODE="audp"
+
+Dans /etc/portsentry/portsentry.conf :
+	##################
+	# Ignore Options #
+	##################
+	...
+	# 0 = Do not block UDP/TCP scans.
+	# 1 = Block UDP/TCP scans.
+	# 2 = Run external command only (KILL_RUN_CMD)
+		Remplacer
+		BLOCK_UDP="0"
+		BLOCK_TCP="0"
+		Par
+		BLOCK_UDP="1"
+		BLOCK_TCP="1"
+
+Afin de tester la robustesse de notre protection on peut par exemple creer une nouvelle VM afin de tenter de nmap notre VM
+	Lorsqu'un scan a ete effectuer d'une adresse ip differente, l'edresse est bloque dans : 
+		/etc/hosts.deny
+	Aussi si sudo route -> on peut voir que ! a ete rajouter devant l'adresse ip de l'attquer commande pour l'effacer :
+		sudo route del <adresse> reject
+
+Ressource : https://www.it-connect.fr/bloquer-les-individus-qui-scannent-votre-machine-avec-portsentry/
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+7) Arretez les services dont vous n’avez pas besoin pour ce projet.
+Commande afin de touver quels sont les services running :
+	sudo service --status-all
+
+Creer un dossier Script dans /home/etlagors/
+	cd /home/elagors && mkdir Script
+Afin de fermer les systemes dont on a pas besoin, j'ai cree un script s'ppellant close_service.sh dans /home/etlagors/Script : 
+	/home/etlagors/Script/close_service.sh
+
+****************************************
+Script :
+	#!/bin/bash
+	sudo service dbus stop 2>/dev/null
+	sudo service procps stop 2>/dev/null
+	sudo service kmod stop 2>/dev/null
+	sudo service portsentry restart
+****************************************
+(2>/dev/null => redirection d'un flux de sortie d’erreur vers rien)
+
+ATTENTION, SI UTILISATION DE SUDO, POSSIBILITE DE CONFLIT
+Ne plus demander de mot de passe sudo pour add user	
+sudo nano /etc/sudoers
+	Modifier
+		%sudo	ALL=(ALL:ALL) ALL
+	Par 
+		%sudo	ALL=(ALL:ALL) NOPASSWD: ALL
+
+Rendre executablee le .sh par tous
+	sudo chmod +x close_service.sh
+Enfin, on met dans crontab -e (-e afin d'editer les actions de contab):
+	@reboot sleep 20 && ~/Script/close_service.sh
+		(afin de close les services non utilise 20 secondes apres le lancement de la VM)
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+8) Réalisez un script qui met à jour l’ensemble des sources de package, puis de vos packages et qui log l’ensemble dans un fichier nommé /var/log/update_script.log. Créez une tache plannifiée pour ce script une fois par semaine à 4h00 du matin et à chaque reboot de la machine.
+Il faut dans un premier temps creer une fichier appeller update_script.log dans /var/log/ :
+	cd /var/log/ && sudo touch  update_script.log
+Ensuite il faut changer les permissions sur un fichier :
+	sudo chmod 777 update_script.log
+
+Dans /home/etlagors/Script/, creer un script puis y mettre :
+********************************************************
+Script :
+	#!/bin/bash
+	sudo apt-get update > /var/log/update_script.log
+	sudo apt-get -y upgrade >> /var/log/update_script.log
+*********************************************************
+
+Rendre executablee le .sh par tous
+	sudo chmod +x close_service.sh
+Enfin, on met dans crontab -e :
+	@reboot sleep 25 && ~/Script/update_upgrade.sh
+	0 4 * * 1 ~/Script/update_upgrade.sh
+
+Pour tester, essayer dans une minute, attention, la fonction date vous donnera l'heure reel du systeme.
+Pour le script, rajouter -Y upgrade afin de dire oui afin de ne pas prendre de message d'erreur.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+9) Réalisez un script qui permet de surveiller les modifications du fichier /etc/crontab et envoie un mail à root si celui-ci a été modifié. Créez une tache plannifiée pour script tous les jours à minuit.
+Telecharger le service postfix et mailutils:
+	sudo apt install postfix
+	sudo apt install mailutils
+
+Puis, suivre le tuto suivant : 
+cat /var/spool/mail/rootdd
+	https://www.grafikart.fr/tutoriels/postfix-sendonly-695
+
+Exemple de Script :
+https://www1.zonewebmaster.eu/serveur-debian-automatisation:scripts-debian-alerte-modification-fichier
+
+echo "Ceci est un mail de test" | mail -s "Sujet de test" root@debian.42.fr
+sudo mail
+
+https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-debian-9

@@ -28,7 +28,7 @@ char	*ft_octal(va_list ap)
 		cnt++;
 		i /= 8;
 	}
-	if (!(res = (char*)malloc(sizeof(*res) * cnt + 1)))
+	if (!(res = (char*)malloc(sizeof(*res) * cnt + 2)))
 		return (NULL);
 	base = "01234567";
 	i = cnt;
@@ -57,7 +57,7 @@ char	*ft_octal_char(va_list ap)
 		cnt++;
 		i /= 8;
 	}
-	if (!(res = (char*)malloc(sizeof(*res) * cnt + 1)))
+	if (!(res = (char*)malloc(sizeof(*res) * cnt + 2)))
 		return (NULL);
 	base = "01234567";
 	i = cnt;
@@ -87,7 +87,7 @@ char	*ft_octal_short(va_list ap)
 		i /= 8;
 	}
 	i = cnt;
-	if (!(res = (char*)malloc(sizeof(*res) * cnt + 1)))
+	if (!(res = (char*)malloc(sizeof(*res) * cnt + 2)))
 		return (NULL);
 	base = "01234567";
 	while (cnt >= 0)
@@ -115,7 +115,7 @@ char	*ft_octal_long(va_list ap)
 		cnt++;
 		i /= 8;
 	}
-	if (!(res = (char*)malloc(sizeof(*res) * cnt + 1)))
+	if (!(res = (char*)malloc(sizeof(*res) * cnt + 2)))
 		return (NULL);
 	base = "01234567";
 	i = cnt;
@@ -144,7 +144,7 @@ char	*ft_octal_longlong(va_list ap)
 		cnt++;
 		i /= 8;
 	}
-	if (!(res = (char*)malloc(sizeof(*res) * cnt + 1)))
+	if (!(res = (char*)malloc(sizeof(*res) * cnt + 2)))
 		return (NULL);
 	base = "01234567";
 	i = cnt;
