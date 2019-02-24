@@ -1,0 +1,81 @@
+Globalde la VM 8go
+--> une partition de 4.2 go (mettre 4.5go lors du partitionnement)
+
+
+	Creer un utilisateur non root.
+	--> lui donne les droits sudo
+
+************************************************************************************************************
+
+	Quelque paquets utili:
+	-> vim
+	-> net-tools
+
+*************************************************************************************************************
+@@@@@@@@@@@@@@@@@@@@@@@@@@@ DHCP/IP STATIC  @@@@@@@@@@@@@@@@@@@
+	Desactive le DHCP
+	--> /etc/network/interfaces
+{
+	mettre en commentaire la ligne ou est dhcp
+		ajouter :
+#
+#ip static
+		auto enp0s3
+		iface enp0s3 inet static
+		address "10.12.1.101" <==== faire un ip a pour recuperre son adresse
+		netmask 255.255.255.252
+		gateway 10.12.254.254
+#
+}
+
+appliquer les modifs:
+# sudo ifdown enp0s3
+# sudo ifup enp0s3
+
+************************************************************************************************************
+
+changer le port SSH de base a savoir le port 22 ///////// enlever la permission conexion root
+--> sudo vim /etc/ssh/sshd_config
+
+changer le port, enregistrer puis redemarer le service
+changer le droit de connexion root, enregistrer puis redemarer le service
+
+sudo service ssh restart
+
+pour se connecter maintenant il faut utilise l option -p avec le nouveau port adequate
+
+*************************************************************************************************************
+@@@@@@@@@@@@@@@@@@@@@@@ CONEXION SSH @@@@@@@@@@@@@@@@@@@@@@@@@@
+
+SSH avec publickey
+
+=== Dans le Terminal de l'ordinateur ===
+--> 
+	cd ~/.ssh
+	ssh-keygen -t rsa 
+	(cela va generer une cle RSA unique, selon la session d ordi ou l on se trouve - si on change d ordi il faut le refaire)
+
+===	Dans la VM ===
+
+-->	Verifier que ~/.ssh/authorized_keys existe, sinon le creer
+	==> touch ~/.ssh/authorized_keys
+
+=== Dans le terminal de l'ordinateur ==
+
+	scp -P "port defini" ~/.ssh/id_rsa.pub matt@10.12.1.143:/home/matt/.ssh/authorized_keys
+		
+	Relancer la VM / le servie
+
+===	Dans la VM ===
+	Modification du Port
+-->	sudo vim /etc/ssh/sshd_config
+		passer "#Port 22" en "Port "choisi precedement"
+		Modification des modalites d'acces de SSH
+		Remplacer :	"#PubkeyAuthentication yes" par "PubkeyAuthentication yes"
+		Remplacer : "#PermitRootLogin prohibit-password" par "PermitRootLogin no"
+		Remplacer : "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2" par "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2"
+
+************************************************************************************************************
+@@@@@@@@@@@@@@@@@@@ FIREWALL @@@@@@@@@@@@@@@@@@@@@@@@
+
+

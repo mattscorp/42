@@ -1,0 +1,139 @@
+Init de la VM:
+
+language = francais
+pays = france
+clavier = etats-unis
+system name = skyline
+domain = skyline
+root mdp = p
+new user = matt
+name new user = matt
+mdp = ttam
+
+partition
+assiste pour un disque entier
+selectionner disq
+tout dans une seule partition
+select 1 suprimer la partition
+select esp libre / creer partition
+definir taille 4.2 GB / primaire / debut 
+fin du parametrage
+terminer partitionement
+appliquer les changements
+
+pas de nouvelles analyses d'image CD
+pays du miroir = France
+miroir de l'archive debian = ftp.fr.debian.org
+mandataire http (option) = laisser vide
+participation aux stats = non
+
+logiciel a installer
+serveur web
+serveur ssh
+util. usuels du sys
+
+install GRUB = oui
+dans le disq. de la VM
+
+********************************************************************************
+Dans la console:
+
+
+en root:
+# apt install sudo
+ajout de l'utilisateur non root au sudoers:
+# sudo adduser matt sudo
+
+connexion en tant que matt:
+-su matt ***********
+-mot de passe ***************
+
+pkg ifconfig = apt install net-tools ****************
+pkg fail2ban (DDOS) = apt install fail2ban ********
+
+trouver l'IP du dhcp:
+# ip route
+
+modifier DHCP:
+# sudo nano /etc/network/interfaces
+	Assigner une adresse IP statique pour ce serveur DHCP avec enp0s3 :
+
+appliquer les modifs:
+# sudo ifdown enp0s3
+# sudo ifup enp0s3
+
+verif
+# ip route
+
+modifier port ssh:
+# sudo nano /etc/ssh/sshd_config
+trouver et changer ligne avec: #Port 22 > Port 42
+
+Public key:
+generation des keys
+					# ssh-keygen -t rsa
+passphrase(option)
+creation de .ssh
+creation des keys
+copie la public-key dans le compte
+					# scp ~/.ssh/id_rsa.pub matt@skyline:
+creation fichier authorized_keys
+					# touch ~/.ssh/authorized_keys
+ajout de la key au fichier
+					# cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
+verif
+					# more .ssh/authorized_keys
+stockage de la key (pour d'autres machines)
+					# mv id_rsa.pub .ssh
+
+firewall:
+afficher les options
+# sudo iptables -L
+ssh in
+# iptables -A INPUT -p tcp -i eth0 --dport 42 -j ACCEPT
+web in
+# iptables -A INPUT -p tcp -i eth0 --dport 80 -j ACCEPT
+web out
+# iptables -A OUTPUT -p tcp -o eth0 --dport 80 -j ACCEPT
+bloquer le traffic autre
+# iptables -P INPUT DROP || # iptables -A INPUT -j DROP
+
+DDOS
+install fail2ban pkg
+# sudo nano config /etc/fail2ban/jail.d/defaults-debian.conf
+**************************************
+[DEFAULT]
+destemail = mascorpi@student.42.fr
+sender = root@skyline
+
+[sshd]
+enabled = true
+port = 22
+
+[sshd-ddos]
+enabled = true
+
+[recidive]
+enabled = true
+***************************************
+
+Services
+# sudo apt install rcconf
+rcconf
+coche ou decoche selon besoin les services
+
+surveiller si crontab est modifier
+# apt install incron
+ajout utilisateur: 
+# nano /etc/incron.allow
+# incrontab -e
+		/etc/crontab IN_MODIFY mail -s "crontab wa modify" root@skyline 
+
+
+
+
+
+
+
+
+
