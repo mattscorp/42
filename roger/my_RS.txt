@@ -1,3 +1,23 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    my_RS.txt                                          :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mascorpi <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/02/25 16:51:49 by mascorpi          #+#    #+#              #
+#    Updated: 2019/02/25 18:40:05 by mascorpi         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+##############################################
+#	______   _____	_____	_____	______	 #
+#	|	 /	 |	 |	|		|		|	 /	 #
+#	-===     |   |  |  ___  ---     -===     #
+#	|   \	 |	 |  |    |  |       |   \    #
+#	|    \   `````  ``````  `````   |    \   #
+##############################################
+
 Globalde la VM 8go
 --> une partition de 4.2 go (mettre 4.5go lors du partitionnement)
 
@@ -78,4 +98,66 @@ SSH avec publickey
 ************************************************************************************************************
 @@@@@@@@@@@@@@@@@@@ FIREWALL @@@@@@@@@@@@@@@@@@@@@@@@
 
+--------------  UFW ---------------
+Instaler ufw 
+--> sudo apt-get install ufw
+ reset le firewall avec 
+
+ --> sudo ufw reset
+--> sudo ufw status 
+--> sudo ufw enable
+--> sudo ufw reload
+--> sudo ufw default deny incoming ==> 
+--> sudo ufw allow OpenSSH 
+--> sudo ufw limit ssh  (de base limit a 6 tentative de co en 30 sec)
+
+--> sudo ufw allow in on eth0 to any port 80
+
+	--> sudo ufw allow "port number" 
+	--> sudo ufw deny "port number" 
+	--> sudo ufw app list
+ 
+--> sudo ufw deny 22 comment 'block le port de base'
+
+--> sudo ufw logging on ===> to maintain logs 
+
+*****************************************************************************************************************
+@@@@@@@@@@@@@@@@@@@@@@ BLOQUER DDOS @@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+------------ FAIL2BAN -------------
+
+sudo vim /etc/fail2ban/jail.local
+
+ecrire cela dedans 
+
+==> 
+	[sshd]
+
+	port = 69
+	enabled = true
+	logpath = %(sshd_log)s
+	backend = %(sshd_backend)s
+	maxretry = 7
+	bantime = 86400
+
+	[sshd-ddos]
+
+	port = 69
+	enabled = true
+	logpath = %(sshd_log)s
+	backend = %(sshd_backend)s
+	maxretry = 7
+	bantime = 86400
+
+	[
+
+sudo fail2ban-client status sshd   ===> permet de savoir qui est dans la prison
+
+sudo fail2ban-client set sshd unbanip "l ip a deban"
+
+
+******************************************************************************************************************
+@@@@@@@@@@@@@@@@@@@@@@@@ BLOQUER SCAN PORT @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+----------------- PORTSENTRY ----------------------
 
