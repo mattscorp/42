@@ -6,7 +6,7 @@
 #    By: mascorpi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/02/25 16:51:49 by mascorpi          #+#    #+#              #
-#    Updated: 2019/02/25 18:40:05 by mascorpi         ###   ########.fr        #
+#    Updated: 2019/02/28 16:58:58 by mascorpi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,21 +18,21 @@
 #	|    \   `````  ``````  `````   |    \   #
 ##############################################
 
-Globalde la VM 8go
+	Globalde la VM 8go
 --> une partition de 4.2 go (mettre 4.5go lors du partitionnement)
 
 
 	Creer un utilisateur non root.
 	--> lui donne les droits sudo
 
-************************************************************************************************************
+	************************************************************************************************************
 
 	Quelque paquets utili:
 	-> vim
 	-> net-tools
 
-*************************************************************************************************************
-@@@@@@@@@@@@@@@@@@@@@@@@@@@ DHCP/IP STATIC  @@@@@@@@@@@@@@@@@@@
+	*************************************************************************************************************
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@ DHCP/IP STATIC  @@@@@@@@@@@@@@@@@@@
 	Desactive le DHCP
 	--> /etc/network/interfaces
 {
@@ -71,69 +71,69 @@ SSH avec publickey
 
 === Dans le Terminal de l'ordinateur ===
 --> 
-	cd ~/.ssh
+cd ~/.ssh
 	ssh-keygen -t rsa 
-	(cela va generer une cle RSA unique, selon la session d ordi ou l on se trouve - si on change d ordi il faut le refaire)
+(cela va generer une cle RSA unique, selon la session d ordi ou l on se trouve - si on change d ordi il faut le refaire)
 
-===	Dans la VM ===
+	===	Dans la VM ===
 
--->	Verifier que ~/.ssh/authorized_keys existe, sinon le creer
+	-->	Verifier que ~/.ssh/authorized_keys existe, sinon le creer
 	==> touch ~/.ssh/authorized_keys
 
-=== Dans le terminal de l'ordinateur ==
+	=== Dans le terminal de l'ordinateur ==
 
 	scp -P "port defini" ~/.ssh/id_rsa.pub matt@10.12.1.143:/home/matt/.ssh/authorized_keys
-		
+
 	Relancer la VM / le servie
 
-===	Dans la VM ===
+	===	Dans la VM ===
 	Modification du Port
--->	sudo vim /etc/ssh/sshd_config
-		passer "#Port 22" en "Port "choisi precedement"
-		Modification des modalites d'acces de SSH
-		Remplacer :	"#PubkeyAuthentication yes" par "PubkeyAuthentication yes"
-		Remplacer : "#PermitRootLogin prohibit-password" par "PermitRootLogin no"
-		Remplacer : "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2" par "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2"
+	-->	sudo vim /etc/ssh/sshd_config
+	passer "#Port 22" en "Port "choisi precedement"
+	Modification des modalites d'acces de SSH
+	Remplacer :	"#PubkeyAuthentication yes" par "PubkeyAuthentication yes"
+	Remplacer : "#PermitRootLogin prohibit-password" par "PermitRootLogin no"
+	Remplacer : "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2" par "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2"
 
-************************************************************************************************************
-@@@@@@@@@@@@@@@@@@@ FIREWALL @@@@@@@@@@@@@@@@@@@@@@@@
+	************************************************************************************************************
+	@@@@@@@@@@@@@@@@@@@ FIREWALL @@@@@@@@@@@@@@@@@@@@@@@@
 
---------------  UFW ---------------
-Instaler ufw 
---> sudo apt-get install ufw
- reset le firewall avec 
+	--------------  UFW ---------------
+	Instaler ufw 
+	--> sudo apt-get install ufw
+	reset le firewall avec 
 
- --> sudo ufw reset
---> sudo ufw status 
---> sudo ufw enable
---> sudo ufw reload
---> sudo ufw default deny incoming ==> 
---> sudo ufw allow OpenSSH 
+	--> sudo ufw reset
+	--> sudo ufw status 
+	--> sudo ufw enable
+	--> sudo ufw reload
+	--> sudo ufw default deny incoming ==> 
+	--> sudo ufw allow OpenSSH 
 --> sudo ufw limit ssh  (de base limit a 6 tentative de co en 30 sec)
 
---> sudo ufw allow in on eth0 to any port 80
+	--> sudo ufw allow in on eth0 to any port 80
 
 	--> sudo ufw allow "port number" 
 	--> sudo ufw deny "port number" 
 	--> sudo ufw app list
- 
---> sudo ufw deny 22 comment 'block le port de base'
 
---> sudo ufw logging on ===> to maintain logs 
+	--> sudo ufw deny 22 comment 'block le port de base'
 
-*****************************************************************************************************************
-@@@@@@@@@@@@@@@@@@@@@@ BLOQUER DDOS @@@@@@@@@@@@@@@@@@@@@@@@@@@
+	--> sudo ufw logging on ===> to maintain logs 
 
------------- FAIL2BAN -------------
+	*****************************************************************************************************************
+	@@@@@@@@@@@@@@@@@@@@@@ BLOQUER DDOS @@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-sudo vim /etc/fail2ban/jail.local
+	------------ FAIL2BAN -------------
 
-ecrire cela dedans 
+	sudo vim /etc/fail2ban/jail.local
 
-==> 
+	ecrire cela dedans 
+
+	==> 
 	[sshd]
 
-	port = 69
+	port = 6969
 	enabled = true
 	logpath = %(sshd_log)s
 	backend = %(sshd_backend)s
@@ -142,7 +142,7 @@ ecrire cela dedans
 
 	[sshd-ddos]
 
-	port = 69
+	port = 6969
 	enabled = true
 	logpath = %(sshd_log)s
 	backend = %(sshd_backend)s
@@ -151,13 +151,56 @@ ecrire cela dedans
 
 	[
 
-sudo fail2ban-client status sshd   ===> permet de savoir qui est dans la prison
+		sudo fail2ban-client status sshd   ===> permet de savoir qui est dans la prison
 
-sudo fail2ban-client set sshd unbanip "l ip a deban"
+		sudo fail2ban-client set sshd unbanip "l ip a deban"
 
 
 ******************************************************************************************************************
 @@@@@@@@@@@@@@@@@@@@@@@@ BLOQUER SCAN PORT @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 ----------------- PORTSENTRY ----------------------
 
+		pour congigurer
+		-->	sudo vim /etc/portsentry/portsentry.conf
+
+##################
+# Ignore Options #
+##################
+		...
+# 0 = Do not block UDP/TCP scans.
+# 1 = Block UDP/TCP scans.
+# 2 = Run external command only (KILL_RUN_CMD)
+		Remplacer
+		BLOCK_UDP="0"
+		BLOCK_TCP="0"
+		Par
+		BLOCK_UDP="1"
+		BLOCK_TCP="1"
+
+
+	Modification du fichier /etc/default/portsentry :
+		-->	sudo vim /etc/default/portsentry
+		Remplacer
+		TCP_MODE="tcp"
+		UDP_MODE="udp"
+		Par
+		TCP_MODE="atcp"
+		UDP_MODE="audp"
+
+
+******************************************************************************************
+@@@@@@@@@@@@@@@@@@@@@@@@@@ ARRETER SERVICE NON NECESSAIRE @@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Connaitre les service en cours
+--> sudo service --status-all
+
+Creer un dossier Script dans /home/matt
+
+puis un fichier en .sh
+
+dedans ==>
+#!/bin/bash
+sudo service dbus stop 2>/dev/null
+sudo service procps stop 2>/dev/null
+sudo service kmod stop 2>/dev/null
+sudo service portsentry restart
