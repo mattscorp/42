@@ -6,7 +6,7 @@
 #    By: mascorpi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/02/25 16:51:49 by mascorpi          #+#    #+#              #
-#    Updated: 2019/02/28 16:58:58 by mascorpi         ###   ########.fr        #
+#    Updated: 2019/03/05 16:46:39 by mascorpi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,6 +78,7 @@ cd ~/.ssh
 	===	Dans la VM ===
 
 	-->	Verifier que ~/.ssh/authorized_keys existe, sinon le creer
+	==> mkdir ~/.ssh
 	==> touch ~/.ssh/authorized_keys
 
 	=== Dans le terminal de l'ordinateur ==
@@ -193,10 +194,15 @@ cd ~/.ssh
 
 Connaitre les service en cours
 --> sudo service --status-all
+et encore pire
+--> systemctl list-unit-files | grep enable
 
 Creer un dossier Script dans /home/matt
 
 puis un fichier en .sh
+
+le rendre executable
+sudo chmod +x close.sh
 
 dedans ==>
 #!/bin/bash
@@ -204,3 +210,67 @@ sudo service dbus stop 2>/dev/null
 sudo service procps stop 2>/dev/null
 sudo service kmod stop 2>/dev/null
 sudo service portsentry restart
+
+2>/dev/null => redirection d'un flux de sortie d’erreur vers rien
+
+sudo systemctl disable apt-daily-upgrade.timer
+sudo systemctl disable remote-fs.target
+sudo systemctl disable apt-daily.timer
+sudo systemctl disable systemd-timesyncd.service
+sudo systemctl disable autovt@.service
+
+ATTENTION, SI UTILISATION DE SUDO, POSSIBILITE DE CONFLIT
+Ne plus demander de mot de passe sudo pour add user	
+sudo vim /etc/sudoers
+Modifier
+%sudo	ALL=(ALL:ALL) ALL
+	Par 
+%sudo	ALL=(ALL:ALL) NOPASSWD: ALL
+
+dans crontab -e (-e afin d'editer les actions de contab):
+@reboot sleep 20 && ~/Script/close.sh
+(afin de close les services non utilise 20 secondes apres le lancement de la VM)
+
+
+*********************************************************************************************
+
+*********************************************************************************************
+
+DEPLOIIMENT WEB
+
+apt install apache2
+ACTIVATION de SSL pour apache2
+==>
+sudo a2enmod ssl
+sudo a2ensite default-ssl
+sudo service apache2 restart
+
+Création du dossier où seront stocker les certificats SSL.
+==>
+sudo mkdir /etc/apache2/ssl
+
+Générer la clé auto-signée et le certificat avec openssl
+==>
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/roger-selfsigned.key -out /etc/apache2/ssl/roger-selfsigned.crt
+
+Adapter le chmod des certificats
+==>
+sudo chmod 600 /etc/apache2/ssl/*
+
+Editer le fichier /etc/apache2/sites-enabled/default-ssl.conf
+==>
+sudo vim /etc/apache2/sites-enabled/default-ssl.conf
+
+ajouter en dessous de ServerAdmin  ServerName 10.12.1.102 (mon ip)
+modifier l emplacement 
+SSLCertificateFile avec le chemin precedant
+SSLCertificateKeyFile
+
+Un fois le test concluant, rendre la redirection de http vers https permanante.
+Édition du fichier /etc/apache2/sites-available/000-default.conf
+==>
+sudo vim /etc/apache2/sites-available/000-default.conf
+
+Redirect permanent "/" "https://10.12.1.102"
+sudo service apache2 restart
+
