@@ -6,17 +6,17 @@
 #    By: mascorpi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/02/25 16:51:49 by mascorpi          #+#    #+#              #
-#    Updated: 2019/03/05 16:46:39 by mascorpi         ###   ########.fr        #
+#    Updated: 2019/03/09 19:01:37 by mascorpi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-##############################################
-#	______   _____	_____	_____	______	 #
-#	|	 /	 |	 |	|		|		|	 /	 #
-#	-===     |   |  |  ___  ---     -===     #
-#	|   \	 |	 |  |    |  |       |   \    #
-#	|    \   `````  ``````  `````   |    \   #
-##############################################
+		##############################################
+		#	______   _____	_____	_____	______	 #
+		#	|	 /	 |	 |	|		|		|	 /	 #
+		#	-===     |   |  |  ___  ---     -===     #
+		#	|   \	 |	 |  |    |  |       |   \    #
+		#	|    \   `````  ``````  `````   |    \   #
+		##############################################
 
 	Globalde la VM 8go
 --> une partition de 4.2 go (mettre 4.5go lors du partitionnement)
@@ -159,35 +159,52 @@ cd ~/.ssh
 
 ******************************************************************************************************************
 @@@@@@@@@@@@@@@@@@@@@@@@ BLOQUER SCAN PORT @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
------------------ PORTSENTRY ----------------------
+----------------- PSAD ----------------------
+==> apt-get install psad
 
-		pour congigurer
-		-->	sudo vim /etc/portsentry/portsentry.conf
+The main PSAD configuration file is /etc/psad/psad.conf. In this tutorial, the IPS feature will be used to detects DOS attacks on the web server.
 
-##################
-# Ignore Options #
-##################
-		...
-# 0 = Do not block UDP/TCP scans.
-# 1 = Block UDP/TCP scans.
-# 2 = Run external command only (KILL_RUN_CMD)
-		Remplacer
-		BLOCK_UDP="0"
-		BLOCK_TCP="0"
-		Par
-		BLOCK_UDP="1"
-		BLOCK_TCP="1"
+The basic settings for PSAD are given below.
+
+EMAIL_ADDRESSES   root@localhost; 
+HOSTNAME          PSAD-box;
+HOME_NET          any;
+EXTERNAL_NET      any;
+
+Now run the following command to update the signature database for detection of attacks.
+
+==> psad --sig-update
+
+Start PSAD using the following command and check status.
+
+==> psad start
+
+pour lister les attaquqnt
+==> psad --fw-list
 
 
-	Modification du fichier /etc/default/portsentry :
-		-->	sudo vim /etc/default/portsentry
-		Remplacer
-		TCP_MODE="tcp"
-		UDP_MODE="udp"
-		Par
-		TCP_MODE="atcp"
-		UDP_MODE="audp"
+pour le rendre compatible avec ufw :
 
+You need to add extra rules to ufw to satisfy psad. Edit following two files:
+
+sudo vi /etc/ufw/before.rules
+
+sudo vi /etc/ufw/before6.rules
+To both files listed above, add following lines for psad, at the very end, but before COMMIT
+
+# custom logging directives for psad
+-A INPUT -j LOG
+-A FORWARD -j LOG
+
+# don't delete the 'COMMIT' line or these rules won't be processed
+COMMIT
+Next restart ufw
+
+sudo ufw disable
+sudo ufw enable
+
+https://serverfault.com/questions/421087/how-to-set-iptables-log-rules-for-psad-with-ufw/475500
+https://www.howtoforge.com/tutorial/psad-installation-and-configuration-on-debian-jessie/
 
 ******************************************************************************************
 @@@@@@@@@@@@@@@@@@@@@@@@@@ ARRETER SERVICE NON NECESSAIRE @@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -233,6 +250,52 @@ dans crontab -e (-e afin d'editer les actions de contab):
 
 
 *********************************************************************************************
+
+Réalisez un script qui met à jour l’ensemble des sources de package, puis de vos packages et qui log l’ensemble dans un fichier nommé /var/log/update_script.log. Créez une tache plannifiée pour ce script une fois par semaine à 4h00 du matin et à chaque reboot de la machine.
+Il faut dans un premier temps creer une fichier appeller update_script.log dans /var/log/ :
+	cd /var/log/ && sudo touch  update_script.log
+Ensuite il faut changer les permissions sur un fichier :
+	sudo chmod 777 update_script.log
+
+Dans /home/matt/Script/, creer un script puis y mettre :
+********************************************************
+Script :
+	#!/bin/bash
+	sudo apt-get update > /var/log/update_script.log
+	sudo apt-get -y upgrade >> /var/log/update_script.log
+*********************************************************
+
+Rendre executablee le .sh par tous
+	sudo chmod +x close_service.sh
+Enfin, on met dans crontab -e :
+	@reboot sleep 25 && ~/Script/update_upgrade.sh
+	0 4 * * 1 ~/Script/update_upgrade.sh
+
+Pour tester, essayer dans une minute, attention, la fonction date vous donnera l'heure reel du systeme.
+Pour le script, rajouter -Y upgrade afin de dire oui afin de ne pas prendre de message d'erreur.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+9) Réalisez un script qui permet de surveiller les modifications du fichier /etc/crontab et envoie un mail à root si celui-ci a été modifié. Créez une tache plannifiée pour script tous les jours à minuit.
+Telecharger le service postfix et mailutils:
+	sudo apt install postfix
+	sudo apt install mailutils
+
+Puis, suivre le tuto suivant : 
+cat /var/spool/mail/rootdd
+	https://www.grafikart.fr/tutoriels/postfix-sendonly-695
+
+Exemple de Script :
+https://www1.zonewebmaster.eu/serveur-debian-automatisation:scripts-debian-alerte-modification-fichier
+
+echo "Ceci est un mail de test" | mail -s "Sujet de test" root@roger.42.fr
+sudo mail
+
+https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-debian-9
+
+
+
+
 
 *********************************************************************************************
 
