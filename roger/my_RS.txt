@@ -6,15 +6,15 @@
 #    By: mascorpi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/02/25 16:51:49 by mascorpi          #+#    #+#              #
-#    Updated: 2019/03/09 19:01:37 by mascorpi         ###   ########.fr        #
+#    Updated: 2019/03/14 16:41:14 by mascorpi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 		##############################################
-		#	______   _____	_____	_____	______	 #
-		#	|	 /	 |	 |	|		|		|	 /	 #
+		#	______   _____	_____	_____	______ #
+		#	|   /	 |   |	|	|       |   /	 #
 		#	-===     |   |  |  ___  ---     -===     #
-		#	|   \	 |	 |  |    |  |       |   \    #
+		#	|   \	 |   |  |    |  |       |   \    #
 		#	|    \   `````  ``````  `````   |    \   #
 		##############################################
 
@@ -159,6 +159,7 @@ cd ~/.ssh
 
 ******************************************************************************************************************
 @@@@@@@@@@@@@@@@@@@@@@@@ BLOQUER SCAN PORT @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
 ----------------- PSAD ----------------------
 ==> apt-get install psad
 
@@ -198,6 +199,7 @@ To both files listed above, add following lines for psad, at the very end, but b
 
 # don't delete the 'COMMIT' line or these rules won't be processed
 COMMIT
+
 Next restart ufw
 
 sudo ufw disable
@@ -234,7 +236,7 @@ sudo systemctl disable apt-daily-upgrade.timer
 sudo systemctl disable remote-fs.target
 sudo systemctl disable apt-daily.timer
 sudo systemctl disable systemd-timesyncd.service
-sudo systemctl disable autovt@.service
+
 
 ATTENTION, SI UTILISATION DE SUDO, POSSIBILITE DE CONFLIT
 Ne plus demander de mot de passe sudo pour add user	
@@ -249,6 +251,67 @@ dans crontab -e (-e afin d'editer les actions de contab):
 (afin de close les services non utilise 20 secondes apres le lancement de la VM)
 
 
+
+
+
+*********************************************************************************************
+
+Se mettre en sudo
+==> 
+su root
+
+Remonter a la racine et aller dans /root
+
+
+Creer les fichier 
+
+-> update_scirpt.sh
+-> verif_cron.sh
+
+Les rendre executable 
+
+chmod 755 update_scritp.sh verif_cron.sh
+
+========== Dans update.sh ==============
+
+#!/bin/bash
+	(apt-get update && apt-get -y upgrade) >> /var/log/update_script.log
+
+
+
+========== Dans verif_cron.sh =============
+
+#! /bin/bash
+
+# Configuration
+
+#Nom du fichier a surveiller
+NOM_FICHIER="/etc/crontab"
+# Date de la dernière modification du fichier ci-dessus
+DERNIERE_MODIF=$(date -r ${NOM_FICHIER} '+%d/%m/%Y %H:%M')
+# Adresse mail de l'administrateur ou de la personne a prévenir
+MAIL_ADMIN="scorpioni.matt@gmail.com"
+# Date a laquelle le fichier a bien été modifié par vos soins
+DATE_MODIF="14/03/2019 15:04"
+# Test si les deux dates sont identiques
+if [ "${DERNIERE_MODIF}" != "${DATE_MODIF}" ]; then
+	   # Si différente, envoi du mail d'alerte
+	      CORPS_MESSAGE="Alerte, le fichier ${NOM_FICHIER} a été modifié le ${DERNIERE_MODIF}";
+	         echo "$CORPS_MESSAGE" | mail -s "Alerte surveillance modification de fichier" "${MAIL_ADMIN}";
+	 fi
+
+en tant que root faire un
+=>
+crontab -e
+
+@reboot ./update_script.sh
+0 4 * * 1 ./update_script.sh
+
+@midnight ./verif_cron.sh
+*********************************************************************************************
+
+
+
 *********************************************************************************************
 
 Réalisez un script qui met à jour l’ensemble des sources de package, puis de vos packages et qui log l’ensemble dans un fichier nommé /var/log/update_script.log. Créez une tache plannifiée pour ce script une fois par semaine à 4h00 du matin et à chaque reboot de la machine.
@@ -261,13 +324,14 @@ Dans /home/matt/Script/, creer un script puis y mettre :
 ********************************************************
 Script :
 	#!/bin/bash
-	sudo apt-get update > /var/log/update_script.log
-	sudo apt-get -y upgrade >> /var/log/update_script.log
+	(apt-get update && apt-get -y upgrade) >> /var/log/update_script.log
 *********************************************************
 
 Rendre executablee le .sh par tous
 	sudo chmod +x close_service.sh
 Enfin, on met dans crontab -e :
+
+
 	@reboot sleep 25 && ~/Script/update_upgrade.sh
 	0 4 * * 1 ~/Script/update_upgrade.sh
 
@@ -277,9 +341,9 @@ Pour le script, rajouter -Y upgrade afin de dire oui afin de ne pas prendre de m
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 9) Réalisez un script qui permet de surveiller les modifications du fichier /etc/crontab et envoie un mail à root si celui-ci a été modifié. Créez une tache plannifiée pour script tous les jours à minuit.
-Telecharger le service postfix et mailutils:
+Telecharger le service postfix
+
 	sudo apt install postfix
-	sudo apt install mailutils
 
 Puis, suivre le tuto suivant : 
 cat /var/spool/mail/rootdd
@@ -296,8 +360,6 @@ https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-s
 
 
 
-
-*********************************************************************************************
 
 DEPLOIIMENT WEB
 
