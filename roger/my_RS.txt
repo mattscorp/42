@@ -94,8 +94,8 @@ cd ~/.ssh
 	Modification des modalites d'acces de SSH
 	Remplacer :	"#PubkeyAuthentication yes" par "PubkeyAuthentication yes"
 	Remplacer : "#PermitRootLogin prohibit-password" par "PermitRootLogin no"
-	Remplacer : "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2" par "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2"
-
+	Remplacer : “#AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2" par "AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2"
+	Remplacer : “#PasswordsAuthentification yes”.  “PasswordsAuthentification no”
 	************************************************************************************************************
 	@@@@@@@@@@@@@@@@@@@ FIREWALL @@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -126,6 +126,8 @@ cd ~/.ssh
 	@@@@@@@@@@@@@@@@@@@@@@ BLOQUER DDOS @@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 	------------ FAIL2BAN -------------
+
+https://www.youtube.com/watch?v=-rmK50PbqCY
 
 	sudo vim /etc/fail2ban/jail.local
 
@@ -158,6 +160,56 @@ cd ~/.ssh
 
 
 ******************************************************************************************************************
+Portsentry
+
+
+
+
+ous devez mettre en place une protection contre les scans sur les ports ouverts de votre VM.
+installation du service
+	apt-get install portsentry
+
+Rajout de notre adresse ip dans afin de nous permettre de scanner nos ports (exception) dans : /etc/portsentry/portsentry.ignore.static
+	10.12.1.108
+	10.12.7.7
+
+Puis restart avec le systeme avec la commande suivante :
+	sudo service portsentry restart (afin que .ignore.static remplit .ignore)
+
+Modification du fichier /etc/default/portsentry :
+	Remplacer
+	TCP_MODE="tcp"
+	UDP_MODE="udp"
+	Par
+	TCP_MODE="atcp"
+	UDP_MODE="audp"
+
+Dans /etc/portsentry/portsentry.conf :
+	##################
+	# Ignore Options #
+	##################
+	...
+	# 0 = Do not block UDP/TCP scans.
+	# 1 = Block UDP/TCP scans.
+	# 2 = Run external command only (KILL_RUN_CMD)
+		Remplacer
+		BLOCK_UDP="0"
+		BLOCK_TCP="0"
+		Par
+		BLOCK_UDP="1"
+		BLOCK_TCP="1"
+
+Afin de tester la robustesse de notre protection on peut par exemple creer une nouvelle VM afin de tenter de nmap notre VM
+	Lorsqu'un scan a ete effectuer d'une adresse ip differente, l'edresse est bloque dans : 
+		/etc/hosts.deny
+	Aussi si sudo route -> on peut voir que ! a ete rajouter devant l'adresse ip de l'attquer commande pour l'effacer :
+		sudo route del <adresse> reject
+
+Ressource : https://www.it-connect.fr/bloquer-les-individus-qui-scannent-votre-machine-avec-portsentry/
+
+
+
+
 @@@@@@@@@@@@@@@@@@@@@@@@ BLOQUER SCAN PORT @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 ----------------- PSAD ----------------------
@@ -344,6 +396,7 @@ Pour le script, rajouter -Y upgrade afin de dire oui afin de ne pas prendre de m
 Telecharger le service postfix
 
 	sudo apt install postfix
+	sudo apt install mailutils
 
 Puis, suivre le tuto suivant : 
 cat /var/spool/mail/rootdd
@@ -357,11 +410,26 @@ sudo mail
 
 https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-debian-9
 
+————————————————————————————————————————————————————————
+
+ENVOI DE MAIL
+
+sudo apt-get install postfix
+sudo apt-get install mailutils
+
+sudo vim /etc/postfix/main.cf
+
+Ligne 43 ==> inet_interfaces = loopback-only
+
+
+—————————————————————————————
 
 
 
 
 DEPLOIIMENT WEB
+
+https://linux-note.com/debian-9-apache-ssl/
 
 apt install apache2
 ACTIVATION de SSL pour apache2
@@ -386,12 +454,19 @@ Editer le fichier /etc/apache2/sites-enabled/default-ssl.conf
 ==>
 sudo vim /etc/apache2/sites-enabled/default-ssl.conf
 
-ajouter en dessous de ServerAdmin  ServerName 10.12.1.102 (mon ip)
-modifier l emplacement 
-SSLCertificateFile avec le chemin precedant
+ajouter en dessous de ServerAdmin  
+		      ServerName 10.12.1.102 (mon ip)
+
+modifier l emplacement
+ 
+SSLCertificateFile
 SSLCertificateKeyFile
 
+SSLCertificateFile /etc/apache2/ssl/roger-selfsigned.crt
+SSLCertificateKeyFile /etc/apache2/ssl/roger-selfsigned.key
+
 Un fois le test concluant, rendre la redirection de http vers https permanante.
+
 Édition du fichier /etc/apache2/sites-available/000-default.conf
 ==>
 sudo vim /etc/apache2/sites-available/000-default.conf

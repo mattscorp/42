@@ -124,20 +124,11 @@ en root :
 		iptables -t filter -A INPUT -p icmp -j ACCEPT
 		iptables -t filter -A OUTPUT -p icmp -j ACCEPT
 		
-
-# serveur DNS et Resolutions
-
-		iptables -t filter -A OUTPUT -p tcp --dport 53 -j ACCEPT
-		iptables -t filter -A OUTPUT -p udp --dport 53 -j ACCEPT
-		iptables -t filter -A INPUT -p tcp --dport 53 -j ACCEPT
-		iptables -t filter -A INPUT -p udp --dport 53 -j ACCEPT
 		
 # SSH (à adapter suivant votre cas)
-		iptables -t filter -A INPUT -p tcp --dport 22 -j ACCEPT
-		iptables -t filter -A OUTPUT -p tcp --dport 22 -j ACCEPT
-		
-# NTP (pour avoir un serveur à l'heure)
-		iptables -t filter -A OUTPUT -p udp --dport 123 -j ACCEPT
+		iptables -t filter -A INPUT -p tcp --dport 6969 -j ACCEPT
+		iptables -t filter -A OUTPUT -p tcp --dport 6969 -j ACCEPT
+
 		
 ### HTTP/HTTPS ###
 		iptables -t filter -A INPUT -p tcp --dport 80 -j ACCEPT
@@ -146,15 +137,7 @@ en root :
 		iptables -t filter -A OUTPUT -p tcp --dport 80 -j ACCEPT
 		iptables -t filter -A OUTPUT -p tcp --dport 443 -j ACCEPT
 		
-# Webmin 
-		iptables -t filter -A INPUT -p tcp --dport 10000 -j ACCEPT
-		iptables -t filter -A OUTPUT -p tcp --dport 10000 -j ACCEPT
-		
-### FTP / FTP-DATA ###
-		iptables -t filter -A INPUT -p tcp --dport 20 -j ACCEPT
-		iptables -t filter -A INPUT -p tcp --dport 21 -j ACCEPT
-		iptables -t filter -A OUTPUT -p tcp --dport 21 -j ACCEPT
-		iptables -t filter -A OUTPUT -p tcp --dport 20 -j ACCEPT
+
 
 
 Rendre le script executable
