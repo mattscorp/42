@@ -1,0 +1,104 @@
+body{
+	background-color: rgb(80, 80, 80);
+	position: fixed;
+}
+.header {
+	position: absolute;
+	left: 10vw;
+	width: 80vw;
+	background-color: rgb(144, 144, 144);
+	border-radius: 0.5vw;
+	box-shadow: 8px 8px 20px black;
+}	
+.day_of_the_42{
+	position: relative;
+	width: 20vw;
+	left: 1.5;
+	bottom: 1;
+	top: 1.5;
+	padding: 0.5vw;
+}
+.reload {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: .75vw;
+	margin: 0.5vw;
+}
+.close {
+	height: .75vw;
+	margin: 0.5vw;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	}
+.loupe {
+	position: absolute;
+	right: 19;
+	height: 6.5vw;
+	bottom: -0.75vw;
+
+}
+.left{
+	position: fixed;
+	top : 8vw;
+	left: 11vw;
+	width: 10vw;
+	height: 30vw;
+	border: 20px;
+	background-color: rgb(144, 144, 144);
+	border-radius: 0.5vw;
+	box-shadow: 8px 8px 20px black;
+}
+.left img{
+	position: relative;
+	left: 2vw;
+	height: 4.5vw;
+	padding: 0.5vw;
+	}
+
+.oeil{
+		border: 5px solid red;
+	}
+
+.mid {
+	position: fixed;
+	left: 22vw;
+	top: 8vw;
+	width: 55vw;
+	height: 33vw;
+	
+	background-color: rgb(144, 144, 144);
+	border-radius: 0.5vw;
+	box-shadow: 8px 8px 20px black;
+
+	}
+.cluster{
+	position: relative;
+	top : 2%;
+	left : 2%;
+	width: 96%;
+	height: 96%;
+
+}
+.right{
+	position: fixed;
+	top : 8vw;
+	right: 11vw;
+	width: 10vw;
+	height: 30vw;
+	border: 20px;
+	background-color: rgb(144, 144, 144);
+	border-radius: 0.5vw;
+	box-shadow: 8px 8px 20px black;
+}
+.right img {
+	position: relative;
+	left: 2vw;
+	height: 4.5vw;
+	padding: 0.5vw;
+
+}
+.book{
+
+}
