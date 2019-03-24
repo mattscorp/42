@@ -1,0 +1,47 @@
+body{
+	margin: 0vw;
+	padding: 0vw;
+}
+nav {
+	width: 10vw;
+	height: 5vw;
+	background-color: green;
+}
+nav > ul {
+	margin: 0vw;
+	padding: 0vw;
+}
+nav > ul::after{
+	content: "";
+	display: block;
+	clear: both;
+}
+nav > ul > li{
+	float: left;
+	position: relative;
+	width: 50vw;
+	height: 5vw;
+}
+
+nav > ul > li > a{
+	padding: 1vw 2vw;
+	color: #fff;
+}
+
+nav li{
+	list-style-type: none;
+}
+.submenu {
+	display: none;
+}
+
+nav a{
+	display: inline-block;;
+	text-decoration: none;
+}
+
+nav li:hover .submenu{
+	display: inline-block;
+	position: absolute;
+	top: 100%;
+}
