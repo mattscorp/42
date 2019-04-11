@@ -1,0 +1,157 @@
+body{
+	margin: 1vw;
+	padding: 1vw;
+}
+nav {
+	height: 5vw;
+	width: 100%;
+
+}
+nav > ul {
+	margin: 0vw;
+	padding: 0vw;
+}
+
+nav > ul > li{
+	float: left;
+	position: relative;
+	display: inline-block;
+}
+
+nav li{
+	list-style-type: none;
+}
+.submenu {
+	display: none;
+}
+
+.submenu_2 {
+	display: none;
+}
+
+nav a{
+	display: inline-block;
+	text-decoration: none;
+}
+
+nav li:hover .submenu{
+	display: inline-block;
+	position: absolute;
+	top: 100%;
+	left: 0vw;
+	padding: 0vw;
+	width: 25vw;
+	height: 15vw;
+}
+
+.salade:hover .submenu_2{
+	display: inline-block;
+	position: absolute;
+	top: 5%;
+	left: 25vw;
+	padding: 0vw;
+	width: 100%;
+	height: 100%;
+}
+.fromage:hover .submenu_2{
+	display: inline-block;
+	position: absolute;
+	top: 8%;
+	left: 25vw;
+	padding: 0vw;
+	width: 100%;
+	height: 100%;
+}
+.tomates:hover .submenu_2{
+	display: inline-block;
+	position: absolute;
+	top: 13%;
+	left: 25vw;
+	padding: 0vw;
+	width: 100%;
+	height: 100%;
+}
+.sauce:hover .submenu_2{
+	display: inline-block;
+	position: absolute;
+	top: 18%;
+	left: 25vw;
+	padding: 0vw;
+	width: 100%;
+	height: 100%;
+}
+.ognions:hover .submenu_2{
+	display: inline-block;
+	position: absolute;
+	top: 24%;
+	left: 25vw;
+	padding: 0vw;
+	width: 100%;
+	height: 100%;
+}
+.menu {
+	width: 30vw;
+	height: 5vw;
+	background-color: green;
+	text-align: center;
+}
+.menu2 {
+	width: 30vw;
+	height: 5vw;
+	text-align: center;
+	background-color: red;
+}
+.pain {
+	background-color: #CAB47D;
+}
+.salade {
+	background-color: #03A903;
+}
+.salade1{
+	background-color: #6DD239;
+}
+.salade2{
+	background-color: #4FA623;
+}
+.salade3{
+	background-color: #1AC122;
+}
+.fromage{
+	background-color: #E3FF24;
+}
+.fromage1{
+	background-color: #FFCE24;
+}
+.fromage2{
+	background-color: #FDF2CB;
+}
+.fromage3{
+	background-color: #FDCECB;
+}
+.tomates {
+	background-color: #F20C0C;
+}
+.tomate1{
+	background-color: #CB433A;
+}
+.tomate2{
+	background-color: #F21B0D;
+}
+.sauce {
+	background-color: #DAD9D2;
+}
+.sauce1 {
+	background-color: #FA2F0A;
+}
+.sauce2 {
+	background-color: #FAEF0A;
+}
+.ognions {
+	background-color: #FFFF91;
+}
+.avec{
+	background-color: green;
+}
+.sans{
+	background-color: red;
+}
