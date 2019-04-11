@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>balloon</title>
+	<script type="text/javascript"  src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">></script>
+</head>
+<body>
+	<div id="balon" style = 
+							"	height: 200px;
+								width: 200px;
+								background-color: rgb(255,0,0);
+								border-radius: 100%;
+							"
+	>
+	
+	</div>	
+</body>
+<script>
+		$(document).ready(function(){
+		
+		var taille = 200;
+		var add =10;
+		var min = 5;
+		$('#balon').click(function add_10px()
+		{
+
+			if (taille+add <= 420)
+			{
+				$('#balon').css('height', taille+add);
+				$('#balon').css('width', taille+add);
+				add = add + 10;		
+			}
+			else
+			{
+				taille=200;
+				add =10;
+				$('#balon').css('height', taille);
+				$('#balon').css('width', taille);
+				$('#balon').css('backgroundColor','rgb(255, 0, 0)');
+				return;
+			}
+			if ($('#balon').css("backgroundColor") == "rgb(255, 0, 0)") // bonne syntax 
+			{
+				$('#balon').css("backgroundColor","rgb(0, 255, 0)");
+				
+			}
+			else if ($('#balon').css("backgroundColor") == "rgb(0, 255, 0)")
+			{
+				$('#balon').css("backgroundColor","rgb(0, 0, 255)");
+			}
+			else if ($('#balon').css("backgroundColor") == "rgb(0, 0, 255)")
+			{
+				$('#balon').css("backgroundColor","rgb(255, 0, 0)");
+			}
+		});
+		$('#balon').mouseleave(function minus_5px() {
+				var res = add - 10;
+			if (add > 10)
+			{
+				$("#balon").height($("#balon").height() - 5);
+				$("#balon").width($("#balon").width() - 5);
+				add = add-min;
+				if ($('#balon').css("backgroundColor") == "rgb(255, 0, 0)")
+				{
+					$('#balon').css("backgroundColor","rgb(0, 0, 255)");
+				}
+				else if ($('#balon').css("backgroundColor") == "rgb(0, 255, 0)")
+				{
+					$('#balon').css("backgroundColor","rgb(255, 0, 0)");
+				}
+				else if ($('#balon').css("backgroundColor") =="rgb(0, 0, 255)") 
+				{
+					$('#balon').css("backgroundColor","rgb(0, 255, 0)");
+				}
+			}
+			else
+			{
+				taille=200;
+				add = 10;
+				min = 5;
+				$('#balon').css('height', taille);
+				$('#balon').css('width', taille);
+			}
+		});
+	});
+	</script>
+</html>

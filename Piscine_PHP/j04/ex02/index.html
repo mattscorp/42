@@ -1,0 +1,8 @@
+<html><body>
+<form method="POST" action="modif.php">
+Identifiant: <input type="user_name" name="login" required <?php if(isset($_SESSION['user_name']) AND (!empty($_SESSION['user_name']))) {echo $_SESSION['user_name'];}?> <br />
+Ancien mot de passe: <input type="password" name="oldpw" required "<?php if(isset($_SESSION['oldpw']) AND (!empty($_SESSION['oldpw']))) {echo $_SESSION['oldpw'];}? >
+Nouveau mot de passe: <input type="password" name="newpw" required "<?php if(isset($_SESSION['newpw']) AND (!empty($_SESSION['newpw']))) {echo $_SESSION['newpw'];}?>
+<input type="submit" placeholder="OK" name = "submit" value = "OK"/>
+</form>
+</body></html>

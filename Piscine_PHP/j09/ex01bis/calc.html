@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>calc</title>
+	<script type="text/javascript"  src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">></script>
+</head>
+<body>
+	<form id="F">
+	<input id="gauche" type="text">
+	<select id="operateur" form="operateur">
+		  <option value="+">+</option>
+		  <option value="-">-</option>
+		  <option value="*">*</option>
+		  <option value="/">/</option>
+		  <option value="%">%</option>
+	</select>
+	<input id="droite" type="text">
+	<input id="submit"type="submit" value="Try me!">
+</form>
+</body>
+<script type="text/javascript">
+	function is_int(x) {
+		return(x % 1 === 0);
+	}
+$(document).ready(function(){
+	setInterval(function(){ alert("Please, use me..."); }, 30000);
+	$('#submit').click(function(e) {
+			e.preventDefault();
+			var left = $('#gauche').val().trim();
+			var right = $('#droite').val().trim();
+			if (isNaN(left) || isNaN(right) || !is_int(right) || !is_int(left) || left == "" || right == "")
+			{
+				alert("Error :(");
+				return;	
+			}
+			var ope = $('#operateur').val();
+			if (left < 0 || right < 0)
+			{
+				alert("Error :(");
+				return;
+			}
+			var left = Number(left);
+			var right = Number(right);
+			if (ope == "+")
+			{
+				var res = left + right;
+				console.log(res);
+				alert(res);
+			}
+			else if (ope == "-")
+			{
+				var res = left - right;
+				console.log(res);
+				alert(res);
+			}
+			else if (ope == "*")
+			{
+				var res = left * right;
+				console.log(res);
+				alert(res);
+			}
+			else if (ope == "/")
+			{
+				if(right == 0)
+				{
+					alert("It’s over 9000!");
+					console.log("It’s over 9000!");
+					return;
+				}
+				else
+					var res = left / right;
+				console.log(res);
+				alert(res);
+			}
+			else if (ope == "%")
+			{
+				if(right == 0)
+				{
+					alert("It’s over 9000!");
+					console.log("It’s over 9000!");
+					return;
+				}
+				else
+					var res = left % right;
+				console.log(res);
+				alert(res);
+			}		
+		});
+	});
+
+</script>
+</html>

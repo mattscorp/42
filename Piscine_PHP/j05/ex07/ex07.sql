@@ -1,0 +1,1 @@
+SELECT title, summary FROM film WHERE INSTR(summary, '42') OR INSTR(title, '42') ORDER BY duration;

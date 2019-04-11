@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>balloon</title>
+</head>
+<body>
+	<div id="balon" style = 
+							"	height: 200px;
+								width: 200px;
+								background-color: red;
+								border-radius: 100%;
+							"
+	>
+	
+	</div>	
+</body>
+<script type="text/javascript">
+		var balon = document.getElementById('balon');
+		var taille = 200;
+		var add =10;
+		var min = 5;
+		balon.onclick = function add_10px()
+		{
+			if (taille+add <= 420)
+			{
+				document.getElementById('balon').style.height = taille+add+"px";
+				document.getElementById('balon').style.width = taille+add+"px";
+				add = add + 10;		
+			}
+			else
+			{
+				taille=200;
+				add =10;
+				document.getElementById('balon').style.height = taille+"px";
+				document.getElementById('balon').style.width = taille+"px";
+				document.getElementById('balon').style.backgroundColor = "red";
+				return;
+			}
+			
+			if (document.getElementById('balon').style.backgroundColor =="red") 
+			{
+				document.getElementById('balon').style.backgroundColor = "green";
+			}
+			else if (document.getElementById('balon').style.backgroundColor == "green") 
+			{
+				document.getElementById('balon').style.backgroundColor = "blue";
+			}
+			else if (document.getElementById('balon').style.backgroundColor == "blue") 
+			{
+				document.getElementById('balon').style.backgroundColor = "red";
+			}
+			
+		}
+		balon.onmouseout = function minus_5px() {
+				var res = add - 10;
+			if (add > 10)
+			{
+				document.getElementById('balon').style.height = taille+res-min+"px";
+				document.getElementById('balon').style.width = taille+res-min+"px";
+				add = add-min;
+				if(document.getElementById('balon').style.backgroundColor =="red")
+				{
+					document.getElementById('balon').style.backgroundColor = "blue";
+				}
+				else if (document.getElementById('balon').style.backgroundColor == "green") 
+				{
+					document.getElementById('balon').style.backgroundColor = "red";
+				}
+				else if (document.getElementById('balon').style.backgroundColor == "blue")
+				{
+					document.getElementById('balon').style.backgroundColor = "green";
+				}
+			}
+			else
+			{
+				taille=200;
+				add = 10;
+				min = 5;
+				document.getElementById('balon').style.height = taille+"px";
+				document.getElementById('balon').style.width = taille+"px";
+			}
+		}
+	</script>
+</html>

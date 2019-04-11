@@ -1,0 +1,1 @@
+INSERT INTO `ft_table` VALUES (id,'loki','staff','2013-05-01 00:00:00'),(id,'scadoux','student','2014-01-01 00:00:00'),(id,'chap','staff','2011-04-27 00:00:00'),(id,'bambou','staff','2014-03-01 00:00:00'),(id,'fantomet','staff','2010-04-03 00:00:00');
