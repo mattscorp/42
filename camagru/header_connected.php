@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -8,8 +9,8 @@
 	<div class="container">
 		<div class="right"> 
 			<ul>
-				<li><a href="./connexion.php">Se Connecter</a></li>
-				<li><a href="./create.php">Créer son compte</a></li>
+				<li>Mon Compte</li>>
+				<li>Se déconnecter</li>>
 			</ul>
 		</div>		
 	</div>
