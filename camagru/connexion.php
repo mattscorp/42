@@ -1,6 +1,6 @@
 <?php
 session_start();
-$bdd = new PDO('mysql:host=localhost;dbname=db_camagru', 'root', '123456');
+$bdd = new PDO('mysql:host=localhost;dbname=db_camagru', 'root', '');
 
 if(isset($_POST['form_connexion']))
 {
@@ -33,7 +33,7 @@ if(isset($_POST['form_connexion']))
 ?>
 <html>
 <head>
-   <title></title>
+   <title>Page de connexion</title>
 
 </head>
 <body>
@@ -47,6 +47,8 @@ if(isset($_POST['form_connexion']))
       <input type="text" name="pseudo_connect" placeholder="pseudo"/>
       <input type="password" name="mdp_connect" placeholder="mot de passe"/>
       <input type="submit" name="form_connexion" value="Se connecter" />
+      <br>
+      <p>Tu n as pas encore de compte, click <a href="inscription.php">ici</a> pour t en créer un !</p>
 
 
    </form>

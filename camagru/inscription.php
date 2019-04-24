@@ -1,5 +1,5 @@
 <?php
-$bdd = new PDO('mysql:host=localhost;dbname=db_camagru', 'root', '123456');
+$bdd = new PDO('mysql:host=localhost;dbname=db_camagru', 'root', '');
 
 if(isset($_POST['form_inscri'])) 
 {
@@ -50,7 +50,7 @@ if(isset($_POST['form_inscri']))
 ?>
 <html>
 <head>
-   <title></title>
+   <title>Inscription</title>
 
 </head>
 <body>
@@ -85,6 +85,9 @@ if(isset($_POST['form_inscri']))
          <tr>
             <td></td>
             <td><input type="submit" name="form_inscri" value="Je m'inscris"></td>
+         </tr>
+         <tr>
+            <td>Si tu as deja un compte click <a href="connexion.php">ici</a></td>
          </tr>
       </table> 
    </form>

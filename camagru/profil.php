@@ -1,6 +1,6 @@
 <?php
 session_start();
-$bdd = new PDO('mysql:host=localhost;dbname=db_camagru', 'root', '123456');
+$bdd = new PDO('mysql:host=localhost;dbname=db_camagru', 'root', '');
 
 if(isset($_GET['id']) AND $_GET['id'] > 0)
 {
@@ -11,26 +11,34 @@ if(isset($_GET['id']) AND $_GET['id'] > 0)
 ?>
 <html>
 <head>
-   <title></title>
+   <title>Mon Profil</title>
 
 </head>
 <body>
 
 
 <div class="inscription" >
-
-   <h3>Profil de <?php echo $userinfo['pseudo']; ?></h3>
-   <br>
-   Pseudo =  <?php echo $userinfo['pseudo']; ?>
-   <br>
-   Mail =  <?php echo $userinfo['mail']; ?>
-     <br>
+   <table>
+<tr>
+   <td><h3>Profil de <?php echo $userinfo['pseudo']; ?></h3></td>
+ </tr>
+ <tr>
+   <td>Pseudo =  <?php echo $userinfo['pseudo']; ?></td>
+ </tr>
+ <tr>
+   <td>Mail =  <?php echo $userinfo['mail']; ?></td>
+ </tr>
 <?php
 if(isset($_SESSION['id']) AND $userinfo['id'] == $_SESSION['id'])
 {
 ?>
-<a href="edition_profil.php">EDITER MON PROFIL</a>
-<a href="deconnexion.php">SE DECONNECTER</a>
+<tr>
+   <td><a href="edition_profil.php">EDITER MON PROFIL</a></td>
+ </tr>
+<tr>
+   <td><a href="deconnexion.php">SE DECONNECTER</a></td>
+ </tr>
+</table>
 <?php
 }
 ?>
