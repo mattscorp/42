@@ -34,8 +34,8 @@
 	document.getElementById("snap").addEventListener("click", function() {
 	context.drawImage(video, 0, 0, 640, 480);
 	});
-
+	saveImageToDatabase();
 	</script>
-
+	
 </body>
 </html>

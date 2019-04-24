@@ -1,5 +1,5 @@
 <?php
-$bdd = new PDO('mysql:host=localhost;dbname=db_camagru', 'root', '');
+$bdd = new PDO('mysql:host=localhost;dbname=db_camagru', 'root', '123456');
 
 if(isset($_POST['form_inscri'])) 
 {
