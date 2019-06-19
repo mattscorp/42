@@ -1,7 +1,19 @@
+<html>
+<head>
+	<title>Confirmation de mail</title>
+	<link href="styles.css" rel="stylesheet">
+</head>
+<body>
 <?php
 include("coco.php");
 
 if(isset($_GET['pseudo'], $_GET['key']) AND !empty($_GET['pseudo']) AND !empty($_GET['key'])){
+	if(isset($_SESSION['id']) AND $_SESSION['id'] > 0)
+	{
+		include("header_co.php");
+	}
+	else
+		include("header.php");
 	$pseudo = htmlspecialchars(urldecode($_GET['pseudo']));
 	$key = intval($_GET['key']);
 
@@ -24,3 +36,5 @@ if(isset($_GET['pseudo'], $_GET['key']) AND !empty($_GET['pseudo']) AND !empty($
 		echo "L'utilisateur n'existe pas !";
 }
 ?>
+</body>
+</html>

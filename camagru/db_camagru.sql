@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 07, 2019 at 07:15 AM
+-- Generation Time: Jun 19, 2019 at 08:01 AM
 -- Server version: 5.6.43
 -- PHP Version: 5.6.40
 
@@ -25,14 +25,26 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `cadres`
+--
+
+CREATE TABLE `cadres` (
+  `id` int(11) NOT NULL,
+  `link_cadre` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `comment`
 --
 
 CREATE TABLE `comment` (
+  `id` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
   `id_img` int(11) NOT NULL,
   `id_user_img` int(11) NOT NULL,
-  `commentary` varchar(255) NOT NULL
+  `commentary` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -46,25 +58,40 @@ CREATE TABLE `images` (
   `link_img` varchar(255) NOT NULL,
   `id_user_img` int(11) NOT NULL,
   `likes_img` int(11) NOT NULL,
-  `comments_img` int(11) NOT NULL
+  `comments_img` int(11) NOT NULL,
+  `img_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `images`
 --
 
-INSERT INTO `images` (`id_img`, `link_img`, `id_user_img`, `likes_img`, `comments_img`) VALUES
-(5, 'images/21_20190607053956.jpg', 21, 0, 0),
-(6, 'images/21_20190607053957.jpg', 21, 0, 0),
-(7, 'images/21_20190607053959.jpg', 21, 0, 0),
-(8, 'images/21_20190607053959.jpg', 21, 0, 0),
-(9, 'images/21_20190607054000.jpg', 21, 0, 0),
-(10, 'images/21_20190607054004.jpg', 21, 0, 0),
-(11, 'images/21_20190607054432.jpg', 21, 0, 0),
-(12, 'images/21_20190607054433.jpg', 21, 0, 0),
-(13, 'images/21_20190607054620.jpg', 21, 0, 0),
-(14, 'images/21_20190607054627.jpg', 21, 0, 0),
-(15, 'images/21_20190607064202.jpg', 21, 0, 0);
+INSERT INTO `images` (`id_img`, `link_img`, `id_user_img`, `likes_img`, `comments_img`, `img_date`) VALUES
+(1, 'images/21_20190618022732.png', 21, 0, 0, '2019-06-18'),
+(2, 'images/24_20190618023222.png', 24, 0, 0, '2019-06-18'),
+(3, 'images/24_20190618023342.png', 24, 0, 0, '2019-06-18'),
+(4, 'images/26_20190618054933.png', 26, 0, 0, '2019-06-18'),
+(5, 'images/26_20190618063651.png', 26, 0, 0, '2019-06-18'),
+(6, 'images/26_20190618063851.png', 26, 0, 0, '2019-06-18'),
+(7, 'images/26_20190618063913.png', 26, 0, 0, '2019-06-18'),
+(8, 'images/26_20190618063920.png', 26, 0, 0, '2019-06-18'),
+(9, 'images/26_20190618063931.png', 26, 0, 0, '2019-06-18'),
+(10, 'images/26_20190618070950.png', 26, 0, 0, '2019-06-18'),
+(11, 'images/26_20190618070956.png', 26, 0, 0, '2019-06-18'),
+(12, 'images/26_20190618071208.png', 26, 0, 0, '2019-06-18'),
+(13, 'images/26_20190618074317.png', 26, 0, 0, '2019-06-18'),
+(14, 'images/26_20190618081855.png', 26, 0, 0, '2019-06-18'),
+(15, 'images/26_20190618082034.png', 26, 0, 0, '2019-06-18'),
+(16, 'images/26_20190618082046.png', 26, 0, 0, '2019-06-18'),
+(17, 'images/26_20190618083121.png', 26, 0, 0, '2019-06-18'),
+(18, 'images/26_20190618083137.png', 26, 0, 0, '2019-06-18'),
+(19, 'images/26_20190618083300.png', 26, 0, 0, '2019-06-18'),
+(20, 'images/21_20190619024311.png', 21, 0, 0, '2019-06-19'),
+(21, 'images/21_20190619024613.png', 21, 0, 0, '2019-06-19'),
+(22, 'images/21_20190619030227.png', 21, 0, 0, '2019-06-19'),
+(23, 'images/21_20190619053750.png', 21, 0, 0, '2019-06-19'),
+(24, 'images/21_20190619060028.png', 21, 0, 0, '2019-06-19'),
+(25, 'images/24_20190619070548.png', 24, 0, 0, '2019-06-19');
 
 -- --------------------------------------------------------
 
@@ -105,15 +132,28 @@ INSERT INTO `users` (`id`, `mail`, `pseudo`, `mdp`, `confirmkey`, `confirm`) VAL
 (6, 'lol@lol.fr', 'lol', 'e54ca0f451fa67adfdc259e3a21a86b1a9f5dc67', '', 0),
 (7, 'matt@mail2.com', 'matt22', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', 0),
 (8, 'matt@mail22.com', 'matt2', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', 0),
-(9, 'yo@yo.com', 'yo', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '', 0),
-(14, 'matt.scorpini@gmail.com', 'test111', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '47902031381', 1),
+(9, 'yo@yo.com', 'yo', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '', 1),
 (15, 'ced@ced.gf', 'ced', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '87562814297', 1),
 (17, 'aa@aa.fr', 'aaa', '7e240de74fb1ed08fa08d38063f6a6a91462a815', '61185675220', 1),
-(21, 'matt.scopioni@gmail.com', '123', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '11358074591', 1);
+(21, 'matt.scopioni@gmail.com', '123', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '11358074591', 1),
+(24, 'scorpioni.matt@gmail.com', 'matt', '6ad196bef982c2a755ffad982690f61aa4b93b26', '64969630264', 1),
+(26, '42betatest@gmail.com', 'beta', '6ad196bef982c2a755ffad982690f61aa4b93b26', '98969322427', 1);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `cadres`
+--
+ALTER TABLE `cadres`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `comment`
+--
+ALTER TABLE `comment`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `images`
@@ -133,16 +173,28 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `cadres`
+--
+ALTER TABLE `cadres`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `comment`
+--
+ALTER TABLE `comment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `images`
 --
 ALTER TABLE `images`
-  MODIFY `id_img` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_img` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Constraints for dumped tables

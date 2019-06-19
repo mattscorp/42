@@ -1,7 +1,18 @@
+<html>
+<head>
+   <title>Confirmation de mail</title>
+   <link href="styles.css" rel="stylesheet">
+</head>
+<body>
 <?php
 session_start();
 include("coco.php");
-
+if(isset($_SESSION['id']) AND $_SESSION['id'] > 0)
+   {
+      include("header_co.php");
+   }
+   else
+      include("header.php");
 if(isset($_POST['form_connexion']))
 {
    $pseudo_connect = htmlspecialchars($_POST['pseudo_connect']);
@@ -13,7 +24,6 @@ if(isset($_POST['form_connexion']))
       $confirm->execute(array($pseudo_connect, $mdp_connect));
       $requser->execute(array($pseudo_connect, $mdp_connect));
       $userexist = $requser->rowCount();
-
       if($userexist == 1)
       {
          $valid = $confirm->fetch();
@@ -41,13 +51,6 @@ if(isset($_POST['form_connexion']))
 }
 
 ?>
-<html>
-<head>
-   <title>Page de connexion</title>
-
-</head>
-<body>
-
 
 <div class="inscription" >
 

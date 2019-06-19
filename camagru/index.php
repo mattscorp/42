@@ -15,8 +15,6 @@
 		include("header.php");
 	$lesposts = $bdd->prepare('SELECT * FROM images ORDER BY id_img DESC');
 	$lesposts->execute();
-	
-	
 	while ($donnees = $lesposts->fetch())
 	{
 	?>
@@ -24,7 +22,6 @@
 	<p>
 		<strong>Photo de : </strong>
 		<?php 
-
 		$id = $donnees['id_user_img'];
 		$pseudo = $bdd->prepare('SELECT * FROM users WHERE id = ?');
 		$pseudo->execute(array($id));
@@ -32,16 +29,16 @@
 		echo $e['pseudo'];
 		?> <br>
 		<?php 
-			//$imageurl = $bdd->prepare("SELECT * FROM images");
-		//	$test = base64_decode($donnees['img_data']);
-		//	$linkimg = "genere_image.php?id=".$donnees['id_img'];
-
-			echo  "$image"."\n";
-			echo "$linkimg";
 			echo '<img class="" src="'.$donnees['link_img'].'"/>';
-
 		?>
 	</p>
+	<br/>
+		<div class='commentaire'>
+			<form method="POST">
+			   <textarea name="commentaire" placeholder="Votre commentaire..."></textarea><br />
+			   <input type="submit" value="Poster mon commentaire" name="submit_commentaire" />
+			</form>	
+		</div>
 	</div>
 	<?php
 	}

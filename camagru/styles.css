@@ -44,6 +44,26 @@
   border: 1px solid blue;    
 }
 
+.commentaire {
+    height: 12%;
+    width: 50%;
+    background-color: #545074;
+    display: block;
+    padding: 5px;
+    border: 1px solid blue;
+    left: 21%;
+    bottom: -42%;
+    position: relative;
+}
+
+.commentaire form {
+  
+}
+
+.commentaire form:hover {
+  background-color: red;
+}
+
 .container img {
 
     position: absolute;
@@ -52,6 +72,13 @@
     height: 15%;
     left: 42%;
 }
+.container p {
+
+text-align: center;
+ 
+}
+
+
 
 /*****************INSCRIPTION CSS********************/
 
@@ -65,3 +92,25 @@
 .blanc {
   visibility: hidden;
 }
+
+/*
+.cam {
+  padding: 5px;
+  border: 1px solid blue; 
+}
+.video {
+  padding: 5px;
+  border: 1px solid green; 
+}
+
+.filtre {
+  padding: 5px;
+  border: 1px solid red; 
+}
+
+.montage {
+  padding: 5px;
+  border: 1px solid grey; 
+}
+*/
+
