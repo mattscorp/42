@@ -37,6 +37,9 @@ if(isset($_SESSION['id']) AND !empty($_SESSION['id']))
    }
    if (isset($_POST['newmdp1']) AND !empty($_POST['newmdp1']) AND isset($_POST['newmdp2']) AND !empty($_POST['newmdp2']))
    {
+      if(preg_match('#^(?=.*[a-z])(?=.*[0-9])#', $_POST['newmdp1']))
+      {
+      
       $mdp1 = sha1($_POST['newmdp1']);
       $mdp2 = sha1($_POST['newmdp2']);
       if ($mdp1 == $mdp2)
@@ -45,12 +48,17 @@ if(isset($_SESSION['id']) AND !empty($_SESSION['id']))
          $insertmdp->execute(array($mdp1, $_SESSION['id']));
          header('Location: profil.php?id='.$_SESSION['id']);
       }
+      
+   }
+      else
+      {
+         $msg = "Votre mot de passe doit faire au moins 6 caracteres et contenir au moins un chiffre et une lettre";
+      }
+   }
       else
       {
          $msg = "Les mots de passe ne correspondent pas !";
       }
-
-   }
 ?>
 <html>
 <head>
@@ -67,9 +75,9 @@ if(isset($_SESSION['id']) AND !empty($_SESSION['id']))
       <label>Mail: </label>
       <input type="text" name="newmail" placeholder="Mail" value="<?php echo $user['mail']; ?>"><br><br>
       <label>Mdp: </label>
-      <input type="password" name="newmdp1" placeholder="Nouveau password" ><br><br>
+      <input type="password" name="newmdp1" placeholder="Nouveau password" autocomplete=""><br><br>
       <label>Confirmation Mdp: </label>
-      <input type="password" name="newmdp2" placeholder="Confirmation" ><br><br>
+      <input type="password" name="newmdp2" placeholder="Confirmation" autocomplete=""><br><br>
       <input type="submit" value="Mettre a jour mon profil">
    </form>
     <?php  if(isset($msg)){echo $msg;}?>   

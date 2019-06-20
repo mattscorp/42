@@ -33,8 +33,19 @@ if(isset($_POST['form_inscri']))
                               $header.='From:"Camagru.com"<noreply@camagru.com>'."\n";
                               $header.='Conten-Type:text/html; charset="utf-8"'."\n";
                               $header.='Content-Transfert-Encoding: 8bit';
-                              $message='<html><head><title>Validation du mail - camagru.com</title>
-           <meta charset="utf-8" /></head><body><div><a href="http://localhost:8888/confirmation.php?pseudo='.urlencode($pseudo).'&key='.$key.'">CONFIRMATION DE VOTRE E MAIL</a></div></body></html>';
+                              $message="
+                              <html>
+                                 <head>
+                                    <title>Validation du mail - camagru.com</title>
+                                    <meta charset='utf-8' />
+                                 </head>
+                                 <body>
+                                    <div>
+                                       <a href="."'http://localhost:8888/confirmation.php?pseudo=".urlencode($pseudo)."&key=".$key."'>CONFIRMATION DE VOTRE E MAIL
+                                       </a>
+                                    </div>
+                                 </body>
+                              </html>";
                               mail($mail, "CONFIMATION DE COMPTE", $message, $header);
                               $erreur = "<h4>Votre compte a bien été créé ! <a class='lien_co' href=\"connexion.php\">Me connecter</a> </h4>"; 
                         } else {
@@ -109,6 +120,9 @@ if(isset($_SESSION['id']) AND $_SESSION['id'] > 0)
          </tr>
          <tr>
             <td>Si tu as deja un compte click <a href="connexion.php">ici</a></td>
+         </tr>
+         <tr>
+            <td>Tu as oublié ton mot de passe, click <a href="recuperation.php">ici</a> pour le recupérer !</td>
          </tr>
       </table> 
    </form>

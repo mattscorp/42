@@ -23,7 +23,10 @@
         video.srcObject = stream;
         video.play();
 
-    });
+    }).catch(function(err) {
+    console.log("veuillez activer votre camera");
+  });
+
    }
    //TRACE BLANC DANS LES CANVAS
    window.onload = function() {
@@ -56,6 +59,9 @@
      context.drawImage(img, 0, 0, 640, 480);
   }
 
+  
+
+
   //EFFECTUE LA PRISE DE LA PHOTO DESSINE LA PHOTO VIA LA VARIABLE VIDEO 
   //PUIS DESSINE LE CADRE DANS LE MEME CANVA
   //SUOERPOSSITION DES CANVAS
@@ -64,23 +70,21 @@ document.getElementById("snap").onclick = function() {
         if (id_cadre_selected === "NOP") {
           alert("SELECTIONNER UN CADRE AVANT DE PRENDRE UNE PHOTO");
           return(0);
-        }     
+        }
        context.drawImage(video, 0, 0, 640, 480);
        var c = document.getElementById("canvas");
        var ctx = c.getContext("2d");
 
        context_tmp.drawImage(video, 0, 0, 640, 480);
-       
+
        var img = document.getElementById(id_cadre_selected);
        ctx.drawImage(img, 0, 0, 640, 480);
    }
 
 document.getElementById("send").onclick = function(e) {
-
    var control_filtres_2 = c.toDataURL();
    var control_canvastmp_2 = tmp.toDataURL();
    var control_canvas_2 = canvas.toDataURL();
-
       if (control_filtres_2.localeCompare(control_filtres) != 0 && control_canvastmp.localeCompare(control_canvastmp_2) != 0 && control_canvas.localeCompare(control_canvas_2) != 0 ) {
           var imagetosave = canvas.toDataURL();
           document.getElementById("base64").value = imagetosave;

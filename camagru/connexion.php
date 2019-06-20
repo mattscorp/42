@@ -58,10 +58,12 @@ if(isset($_POST['form_connexion']))
    <br><br>
    <form method="POST" action="">
       <input type="text" name="pseudo_connect" placeholder="pseudo"/>
-      <input type="password" name="mdp_connect" placeholder="mot de passe"/>
+      <input type="password" name="mdp_connect" placeholder="mot de passe" autocomplete="" />
       <input type="submit" name="form_connexion" value="Se connecter" />
       <br>
-      <p>Tu n as pas encore de compte, click <a href="inscription.php">ici</a> pour t en créer un !</p>
+      <p>Tu n'as pas encore de compte, click <a href="inscription.php">ici</a> pour t en créer un !</p>
+      <br>
+      <p>Tu as oublié ton mot de passe, click <a href="recuperation.php">ici</a> pour le recupérer !</p>
 
 
    </form>
